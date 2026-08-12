@@ -16,6 +16,7 @@ import frc.robot.Robot;
 
 public class ExampleSubsystemConstants {
 	public static final Voltage kExampleVoltage = Units.Volts.of(0.0);
+	public static final Voltage kIdleVoltage = Units.Volts.of(0.0);
 
     public static final double kGearing = 1.0;
     

@@ -6,6 +6,7 @@ import frc.lib.io.MotorIO.Setpoint;
 
 public class ExampleSubsystem extends MotorSubsystem<MotorIOTalonFX> {
     public static final Setpoint EXAMPLE_SETPOINT = Setpoint.withVoltageSetpoint(ExampleSubsystemConstants.kExampleVoltage);
+    public static final Setpoint IDLE = Setpoint.withVoltageSetpoint(ExampleSubsystemConstants.kIdleVoltage);
 
     public static final ExampleSubsystem mInstance = new ExampleSubsystem();
 
