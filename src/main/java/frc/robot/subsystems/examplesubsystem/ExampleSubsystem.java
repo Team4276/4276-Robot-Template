@@ -1,0 +1,16 @@
+package frc.robot.subsystems.examplesubsystem;
+
+import frc.lib.bases.MotorSubsystem;
+import frc.lib.io.MotorIOTalonFX;
+import frc.lib.io.MotorIO.Setpoint;
+
+public class ExampleSubsystem extends MotorSubsystem<MotorIOTalonFX> {
+    public static final Setpoint EXAMPLE_SETPOINT = Setpoint.withVoltageSetpoint(ExampleSubsystemConstants.kExampleVoltage);
+
+    public static final ExampleSubsystem mInstance = new ExampleSubsystem();
+
+    public ExampleSubsystem() {
+        super(ExampleSubsystemConstants.getMotorIO(), "Example Subsystem");
+    }
+
+}
