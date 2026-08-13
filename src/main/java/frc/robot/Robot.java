@@ -10,6 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
+import org.littletonrobotics.junction.LogFileUtil;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGReader;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+
 import choreo.auto.AutoFactory;
 import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.util.sendable.Sendable;
@@ -17,7 +24,6 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Threads;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,78 +34,82 @@ import frc.robot.auto.AutoSelector;
 import frc.robot.controlboard.ControlBoard;
 import frc.robot.subsystems.drive.Drive;
 
-public class Robot extends TimedRobot {
-	public static boolean isRedAlliance;
+public class Robot extends LoggedRobot {
+    public static boolean isRedAlliance;
 
     private AutoFactory mAutoFactory;
     private Command mAutonomousCommand;
     private final AutoSelector mAutoSelector;
 
-	public static boolean resetPoseForAuto = false;
+    public static boolean resetPoseForAuto = false;
 
     public Robot() {
+        Logger.recordMetadata("ProjectName", "RobotName"); // Set a metadata value
+
+        if (isReal()) {
+            Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
+            Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+        } else {
+            setUseTiming(false); // Run as fast as possible
+            String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the
+                                                          // user)
+            Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
+            Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim"))); // Save outputs to a
+                                                                                                  // new log
+        }
+
+        Logger.start();
+
         mAutoFactory = new AutoFactory(
-            Drive.mInstance::getPose, 
-            Drive.mInstance::resetPose, 
-            Drive.mInstance::followChoreoTrajectory, 
-            true, 
-            Drive.mInstance);
-        
+                Drive.mInstance::getPose,
+                Drive.mInstance::resetPose,
+                Drive.mInstance::followChoreoTrajectory,
+                true,
+                Drive.mInstance);
+
         mAutoSelector = new AutoSelector(mAutoFactory);
 
-        		// Log active commands
-		Map<String, Integer> commandCounts = new HashMap<>();
-		BiConsumer<Command, Boolean> logCommandFunction = (Command command, Boolean active) -> {
-			String name = command.getName();
-			int count = commandCounts.getOrDefault(name, 0) + (active ? 1 : -1);
-			commandCounts.put(name, count);
-			SmartDashboard.putBoolean(
-					"Commands/Unique/" + name + "_" + Integer.toHexString(command.hashCode()), active);
-			SmartDashboard.putBoolean("Commands/All/" + name, count > 0);
-		};
+        // Log active commands
+        Map<String, Integer> commandCounts = new HashMap<>();
+        BiConsumer<Command, Boolean> logCommandFunction = (Command command, Boolean active) -> {
+            String name = command.getName();
+            int count = commandCounts.getOrDefault(name, 0) + (active ? 1 : -1);
+            commandCounts.put(name, count);
+            Logger.recordOutput(
+                    "Commands/Unique/" + name + "_" + Integer.toHexString(command.hashCode()), active);
+            Logger.recordOutput("Commands/All/" + name, count > 0);
+        };
 
-		CommandScheduler.getInstance()
-				.onCommandInitialize((Command command) -> logCommandFunction.accept(command, true));
-		CommandScheduler.getInstance().onCommandFinish((Command command) -> logCommandFunction.accept(command, false));
-		CommandScheduler.getInstance()
-				.onCommandInterrupt((Command command) -> logCommandFunction.accept(command, false));
-        
-		CommandScheduler.getInstance().schedule(mAutoFactory.warmupCmd());
+        CommandScheduler.getInstance()
+                .onCommandInitialize((Command command) -> logCommandFunction.accept(command, true));
+        CommandScheduler.getInstance().onCommandFinish((Command command) -> logCommandFunction.accept(command, false));
+        CommandScheduler.getInstance()
+                .onCommandInterrupt((Command command) -> logCommandFunction.accept(command, false));
+
+        CommandScheduler.getInstance().schedule(mAutoFactory.warmupCmd());
 
         ControlBoard.mInstance.configureBindings();
 
+        RobotController.setBrownoutVoltage(Volts.of(5.5));
 
-		if (Robot.isReal()) {
-			DataLogManager.start("/U/logs");
-			DriverStation.startDataLog(DataLogManager.getLog());
-		}
-
-		RobotController.setBrownoutVoltage(Volts.of(5.5));
-        
-		for (Sendable sendable : RobotConstants.LOGGED_SENDABLES) {
-			SmartDashboard.putData(sendable);
-		}
-		SmartDashboard.putData("Auto Selector", mAutoSelector.getAutoChooser());
+        for (Sendable sendable : RobotConstants.LOGGED_SENDABLES) {
+            SmartDashboard.putData(sendable);
+        }
+        SmartDashboard.putData("Auto Selector", mAutoSelector.getAutoChooser());
     }
 
     @Override
     public void robotPeriodic() {
-		LoggedTracer.reset();
+        LoggedTracer.reset();
 
         try {
             Threads.setCurrentThreadPriority(true, 10);
 
-            double commandSchedulerStart = Timer.getTimestamp();
-            SmartDashboard.putNumber("Current Timestamp Seconds", Timer.getFPGATimestamp());
             CommandScheduler.getInstance().run();
-            double commandSchedulerEnd = Timer.getTimestamp();
-            SmartDashboard.putNumber(
-                    "Logged Robot/Loop Cycle Time Milliseconds",
-                    (commandSchedulerEnd - commandSchedulerStart) * 1000.0);
             Threads.setCurrentThreadPriority(false, 0);
         } catch (Exception e) {
-            SmartDashboard.putString("Error/Last Loop Error/Last Error Message", e.getMessage());
-            SmartDashboard.putNumber("Error/Last Loop Error/Last Error Timestamp", Timer.getFPGATimestamp());
+            Logger.recordOutput("Error/Last Loop Error/Last Error Message", e.getMessage());
+            Logger.recordOutput("Error/Last Loop Error/Last Error Timestamp", Timer.getFPGATimestamp());
         }
     }
 
@@ -111,25 +121,25 @@ public class Robot extends TimedRobot {
     public void disabledPeriodic() {
         updateAlliance();
 
-		if (resetPoseForAuto) {
-			Drive.mInstance.resetPose(mAutoSelector.getSelectedAutoStartingPose());
-			resetPoseForAuto = false;
-		}
+        if (resetPoseForAuto) {
+            Drive.mInstance.resetPose(mAutoSelector.getSelectedAutoStartingPose());
+            resetPoseForAuto = false;
+        }
     }
-    
-	public void updateAlliance() {
-		if (Robot.isSimulation()) {
-			isRedAlliance = DriverStationSim.getAllianceStationId() == AllianceStationID.Red1
-					|| DriverStationSim.getAllianceStationId() == AllianceStationID.Red2
-					|| DriverStationSim.getAllianceStationId() == AllianceStationID.Red3;
-		} else {
-			DriverStation.getAlliance()
-					.ifPresentOrElse(
-							alliance -> isRedAlliance = alliance == DriverStation.Alliance.Red, () -> {
-								SmartDashboard.putNumber("Last unable to set alliance", Timer.getFPGATimestamp());
-							});
-		}
-	}
+
+    public void updateAlliance() {
+        if (Robot.isSimulation()) {
+            isRedAlliance = DriverStationSim.getAllianceStationId() == AllianceStationID.Red1
+                    || DriverStationSim.getAllianceStationId() == AllianceStationID.Red2
+                    || DriverStationSim.getAllianceStationId() == AllianceStationID.Red3;
+        } else {
+            DriverStation.getAlliance()
+                    .ifPresentOrElse(
+                            alliance -> isRedAlliance = alliance == DriverStation.Alliance.Red, () -> {
+                                Logger.recordOutput("Last unable to set alliance", Timer.getFPGATimestamp());
+                            });
+        }
+    }
 
     @Override
     public void disabledExit() {
