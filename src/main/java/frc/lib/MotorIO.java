@@ -12,8 +12,6 @@ import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.*;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import frc.lib.util.Util;
 
 import java.util.function.UnaryOperator;
@@ -49,10 +47,6 @@ public abstract class MotorIO {
 				BaseUnits.AngleUnit.of(0.0).per(Units.Seconds).per(Units.Seconds) };
 
 		public boolean configFailed = false;
-	}
-
-	@AutoLog
-	public static class MotorInputs {
 	}
 
 	/**
@@ -324,43 +318,6 @@ public abstract class MotorIO {
 				return currentSetpoint.baseUnits;
 		}
 	}
-
-	// spotless:off
-
-	/**
-	 * Class to store readings from a motor. Readings should be stored relative to
-	 * the mechanism the motor is controlling.
-	 */
-	public class Inputs implements Sendable {
-		public AngularVelocity velocity = BaseUnits.AngleUnit.of(0.0).per(Units.Second);
-		public Angle position = BaseUnits.AngleUnit.of(0.0);
-		public Current statorCurrent = BaseUnits.CurrentUnit.of(0.0);
-		public Current supplyCurrent = BaseUnits.CurrentUnit.of(0.0);
-		public Voltage motorVoltage = BaseUnits.VoltageUnit.of(0.0);
-		public Voltage pidVoltage = BaseUnits.VoltageUnit.of(0.0);
-		public Temperature motorTemperature = BaseUnits.TemperatureUnit.of(0.0);
-		public AngularAcceleration acceleration = BaseUnits.AngleUnit.of(0.0).per(Units.Seconds).per(Units.Seconds);
-
-		@Override
-		public void initSendable(SendableBuilder builder) {
-			builder.addDoubleProperty(
-					"Velocity " + unitType.name() + " per " + time.name() + ":",
-					() -> velocity.in(unitType.per(time)),
-					null);
-			builder.addDoubleProperty("Position " + unitType.name() + ":", () -> position.in(unitType), null);
-			builder.addDoubleProperty("Stator Current Amps:", () -> statorCurrent.in(Units.Amps), null);
-			builder.addDoubleProperty("Supply Current Amps:", () -> supplyCurrent.in(Units.Amps), null);
-			builder.addDoubleProperty("Motor Voltage:", () -> motorVoltage.in(Units.Volts), null);
-			builder.addDoubleProperty("PID Voltage:", () -> pidVoltage.in(Units.Volts), null);
-			builder.addDoubleProperty("Motor Temperature Celsius:", () -> motorTemperature.in(Units.Celsius), null);
-			builder.addDoubleProperty(
-					"Acceleration" + unitType.name() + " per " + time.name() + " per " + time.name() + ":",
-					() -> acceleration.in(unitType.per(time).per(time)),
-					null);
-		}
-	}
-
-	// spotless:on
 
 	/**
 	 * Enum to represent different control modes for a MotorIO.

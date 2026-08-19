@@ -6,7 +6,6 @@ import edu.wpi.first.hal.util.BoundaryException;
 import edu.wpi.first.units.BaseUnits;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -16,6 +15,8 @@ import frc.lib.io.MotorIO.Mode;
 import frc.lib.io.MotorIO.Setpoint;
 import java.util.function.Consumer;
 import java.util.function.Function;
+
+import org.littletonrobotics.junction.Logger;
 
 public class ControllerUtil {
 
@@ -68,7 +69,7 @@ public class ControllerUtil {
 				next = createFromMode(setpointMode, initialValue + offset);
 			} else {
 				if (followed.mode != setpointMode) {
-					SmartDashboard.putNumber("Jogging/Last Unable to Jog Seconds timestamp", Timer.getFPGATimestamp());
+					Logger.recordOutput("Jogging/Last Unable to Jog Seconds timestamp", Timer.getFPGATimestamp());
 					return;
 				}
 				if (followed.baseUnits + offset == initialValue) {

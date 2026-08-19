@@ -45,6 +45,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 /**
  * Contains basic functions that are used often.
  */
@@ -414,7 +416,7 @@ public class Util {
 						new Pose2d(state.poseMeters.getTranslation(), poseRotation),
 						Units.Seconds.of(state.timeSeconds)));
 			}
-			SmartDashboard.putNumber("Auto Align Traj/Number Of Trajectory States", poseList.size());
+			Logger.recordOutput("Auto Align Traj/Number Of Trajectory States", poseList.size());
 		}
 	}
 
@@ -483,11 +485,11 @@ public class Util {
 		return Units.Rotations.of(lowestRotation);
 	}
 
-	public static Command smartDashCommand(String message) {
-		return Commands.defer(
-				() -> Commands.runOnce(() -> SmartDashboard.putNumber(message, Timer.getFPGATimestamp())),
-				getEmptySubsystemSet());
-	}
+	// public static Command smartDashCommand(String message) {
+	// 	return Commands.defer(
+	// 			() -> Commands.runOnce(() -> SmartDashboard.putNumber(message, Timer.getFPGATimestamp())),
+	// 			getEmptySubsystemSet());
+	// }
 
 	public static <M extends Measure<U>, U extends Unit> M min(M x, M y) {
 		return x.lt(y) ? x : y;

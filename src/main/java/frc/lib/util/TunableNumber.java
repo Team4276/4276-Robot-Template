@@ -1,7 +1,8 @@
 package frc.lib.util;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.function.DoubleSupplier;
+
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 /**
  * Class creating a mutable object which can be mutated dynamically through SmartDashboard
@@ -12,6 +13,7 @@ public class TunableNumber implements DoubleSupplier {
 	private double defaultValue; // default value
 	private double currentValue; // current value in SmartDashboard
 	private double lastCurrentValue; // last checked current value
+	private LoggedNetworkNumber number;
 
 	/**
 	 * Constructs a new Tunable number
@@ -20,9 +22,7 @@ public class TunableNumber implements DoubleSupplier {
 	 */
 	public TunableNumber(String smartDashboardKey, double defaultValue) {
 		key = TABLE_KEY + "/" + smartDashboardKey; // Constructs a new TunableNumber with smartDashboardKey
-		publish(defaultValue); // Assigns the default value parameter as the default value and publishes the value into
-		// SmartDashboard
-		// smartDashboard
+		number = new LoggedNetworkNumber(key, defaultValue);
 		this.currentValue = defaultValue;
 		this.lastCurrentValue = currentValue;
 	}
@@ -40,14 +40,14 @@ public class TunableNumber implements DoubleSupplier {
 	 */
 	public void publish(double valueToSet) {
 		defaultValue = valueToSet;
-		SmartDashboard.putNumber(key, SmartDashboard.getNumber(key, valueToSet));
+		number.setDefault(valueToSet);
 	}
 	/**
 	 * Gets the current value on smartdashboard
 	 */
 	@Override
 	public double getAsDouble() {
-		return SmartDashboard.getNumber(key, 0.0);
+		return number.getAsDouble();
 	}
 	/**
 	 * Checks if the current value in smartdashboard has changed

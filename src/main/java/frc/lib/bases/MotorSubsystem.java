@@ -18,8 +18,6 @@ import frc.lib.util.TunableNumber;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-import org.littletonrobotics.junction.Logger;
-
 /**
  * Base subsystem for any subsystem that uses motors.
  */
