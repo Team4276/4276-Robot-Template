@@ -45,14 +45,16 @@ public class MotorIOTalonFXSim extends MotorIOTalonFX {
 	}
 
 	@Override
-	protected void updateMotorInputs(Inputs inputsToUpdate, TalonFX motor) {
-		inputsToUpdate.position = sim.getPosition();
-		inputsToUpdate.velocity = sim.getVelocity();
-		inputsToUpdate.statorCurrent = sim.getStatorCurrent();
-		inputsToUpdate.supplyCurrent =
-				Units.Amps.of(main.getSimState().getSupplyCurrent()).times(getMotorInvertMultiplier());
-		inputsToUpdate.motorVoltage =
-				Units.Volts.of(main.getSimState().getMotorVoltage()).times(getMotorInvertMultiplier());
+	public void updateInputs() {
+		inputs.enabled = getEnabled();
+		inputs.setPointType = Mode.IDLE;
+		inputs.setPointValueAsDouble = 0.0;
+
+		inputs.position[0] = sim.getPosition();
+		inputs.velocity[0] = sim.getVelocity();
+		inputs.statorCurrent[0] = sim.getStatorCurrent();
+		inputs.supplyCurrent[0] = Units.Amps.of(main.getSimState().getSupplyCurrent()).times(getMotorInvertMultiplier());
+		inputs.motorVoltage[0] = Units.Volts.of(main.getSimState().getMotorVoltage()).times(getMotorInvertMultiplier());
 	}
 
 	/**

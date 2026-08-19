@@ -25,14 +25,16 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Dimensionless;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.UnaryOperator;
 
+import org.littletonrobotics.junction.Logger;
+
 /**
- * Class used to control a main TalonFX and any number of followers for a real mechanism.
+ * Class used to control a main TalonFX and any number of followers for a real
+ * mechanism.
  */
 public class MotorIOTalonFX extends MotorIO {
 	protected final TalonFX main;
@@ -41,8 +43,8 @@ public class MotorIOTalonFX extends MotorIO {
 	protected TalonFXConfiguration followerConfig;
 	private final ControlRequestGetter requestGetter;
 	private BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
-	private ThreadPoolExecutor threadPoolExecutor =
-			new ThreadPoolExecutor(1, 1, 5, java.util.concurrent.TimeUnit.MILLISECONDS, queue);
+	private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1, 1, 5,
+			java.util.concurrent.TimeUnit.MILLISECONDS, queue);
 	private boolean configFailed = false;
 
 	public void applyConfig(TalonFX fx, TalonFXConfiguration config) {
@@ -60,28 +62,31 @@ public class MotorIOTalonFX extends MotorIO {
 
 	@Override
 	public void updateInputs() {
-		updateMotorInputs(inputs, main);
+		inputs.enabled = getEnabled();
+		inputs.setPointType = Mode.IDLE;
+		inputs.setPointValueAsDouble = 0.0;
+
+		inputs.position[0] = main.getPosition().getValue();
+		inputs.velocity[0] = main.getVelocity().getValue();
+		inputs.statorCurrent[0] = main.getStatorCurrent().getValue();
+		inputs.supplyCurrent[0] = main.getSupplyCurrent().getValue();
+		inputs.motorVoltage[0] = main.getMotorVoltage().getValue();
+		inputs.motorTemperature[0] = main.getDeviceTemp().getValue();
+		inputs.acceleration[0] = main.getAcceleration().getValue();
 
 		for (int i = 0; i < followers.length; i++) {
-			updateMotorInputs(followerInputs[i], followers[i]);
+			inputs.position[i + 1] = followers[i].getPosition().getValue();
+			inputs.velocity[i + 1] = followers[i].getVelocity().getValue();
+			inputs.statorCurrent[i + 1] = followers[i].getStatorCurrent().getValue();
+			inputs.supplyCurrent[i + 1] = followers[i].getSupplyCurrent().getValue();
+			inputs.motorVoltage[i + 1] = followers[i].getMotorVoltage().getValue();
+			inputs.motorTemperature[i + 1] = followers[i].getDeviceTemp().getValue();
+			inputs.acceleration[i + 1] = followers[i].getAcceleration().getValue();
 		}
-	}
 
-	/**
-	 * Updates one Inputs from readings of a TalonFX motor
-	 *
-	 * @param inputsToUpdate Inputs to update from reading.
-	 * @param motor Motor to read from.
-	 */
-	protected void updateMotorInputs(Inputs inputsToUpdate, TalonFX motor) {
-		inputsToUpdate.position = motor.getPosition().getValue();
-		inputsToUpdate.velocity = motor.getVelocity().getValue();
-		inputsToUpdate.statorCurrent = motor.getStatorCurrent().getValue();
-		inputsToUpdate.supplyCurrent = motor.getSupplyCurrent().getValue();
-		inputsToUpdate.motorVoltage = motor.getMotorVoltage().getValue();
-		inputsToUpdate.pidVoltage = Units.Volts.of(motor.getClosedLoopOutput().getValue());
-		inputsToUpdate.motorTemperature = motor.getDeviceTemp().getValue();
-		inputsToUpdate.acceleration = motor.getAcceleration().getValue();
+		inputs.pidVoltage = Units.Volts.of(main.getClosedLoopOutput().getValue());
+
+		inputs.configFailed = false;
 	}
 
 	private void setControl(ControlRequest request) {
@@ -151,7 +156,7 @@ public class MotorIOTalonFX extends MotorIO {
 	}
 
 	private void setNeutralMode(TalonFX fx, NeutralModeValue neutralMode) {
-		SmartDashboard.putNumber("TALON FX NEUTRAL MODE SET!!", Timer.getFPGATimestamp());
+		Logger.recordOutput("TALON FX NEUTRAL MODE SET!!", Timer.getFPGATimestamp());
 		threadPoolExecutor.submit(() -> {
 			fx.setNeutralMode(neutralMode);
 		});
@@ -184,7 +189,8 @@ public class MotorIOTalonFX extends MotorIO {
 	}
 
 	@Override
-	public void disabledPeriodic() {}
+	public void disabledPeriodic() {
+	}
 
 	/**
 	 * Applies a TalonFXConfiguration to the main motor.
@@ -197,9 +203,11 @@ public class MotorIOTalonFX extends MotorIO {
 	}
 
 	/**
-	 * Changes the currently applied main TalonFXConfiguration and applies the new configuration to the main motor.
+	 * Changes the currently applied main TalonFXConfiguration and applies the new
+	 * configuration to the main motor.
 	 *
-	 * @param configChanger Mutating operation to apply on the current configuration.
+	 * @param configChanger Mutating operation to apply on the current
+	 *                      configuration.
 	 */
 	public void changeMainConfig(UnaryOperator<TalonFXConfiguration> configChanger) {
 		setMainConfig(configChanger.apply(config));
@@ -218,9 +226,11 @@ public class MotorIOTalonFX extends MotorIO {
 	}
 
 	/**
-	 * Changes the currently applied follower TalonFXConfiguration and applies the new configuration to all follower motors.
+	 * Changes the currently applied follower TalonFXConfiguration and applies the
+	 * new configuration to all follower motors.
 	 *
-	 * @param configChanger Mutating operation to apply on the current configuration.
+	 * @param configChanger Mutating operation to apply on the current
+	 *                      configuration.
 	 */
 	public void changeFollowerConfig(UnaryOperator<TalonFXConfiguration> configChanger) {
 		setFollowerConfig(configChanger.apply(followerConfig));
@@ -247,7 +257,8 @@ public class MotorIOTalonFX extends MotorIO {
 	}
 
 	/**
-	 * Configuration for a MotorIOTalonFX. Motion magic control is on slot 0, velocity on slot 1, and position PID on slot 2.
+	 * Configuration for a MotorIOTalonFX. Motion magic control is on slot 0,
+	 * velocity on slot 1, and position PID on slot 2.
 	 */
 	public static class MotorIOTalonFXConfig {
 		public AngleUnit unit = Units.Rotations;

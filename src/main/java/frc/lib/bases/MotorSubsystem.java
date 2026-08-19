@@ -5,7 +5,6 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -175,17 +174,6 @@ public class MotorSubsystem<IO extends MotorIO> extends SubsystemBase {
 	 */
 	public void outputTelemetry() {
 		LoggedTracer.record(name);
-	}
-
-	/**
-	 * Initializes this Sendable object. Override this should you need to output more information to SmartDashboard.
-	 *
-	 * @param builder Sendable builder.
-	 */
-	@Override
-	public void initSendable(SendableBuilder builder) {
-		super.initSendable(builder);
-		io.initSendable(builder);
 	}
 
 	/**
