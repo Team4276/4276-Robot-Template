@@ -27,11 +27,12 @@ public class ControlBoard extends SubsystemBase {
 
 	public void configureBindings() {
 		// Drive.mInstance.setDefaultCommand(Drive.mInstance.followSwerveRequestCommand(
-		// 		DriveConstants.teleopRequest, DriveConstants.teleopRequestUpdater));
+		// DriveConstants.teleopRequest, DriveConstants.teleopRequestUpdater));
 		// driver.back()
-		// 		.onTrue(Commands.runOnce(
-		// 						() -> Drive.mInstance.getGeneratedDrive().seedFieldCentric(), Drive.mInstance)
-		// 				.ignoringDisable(true));
+		// .onTrue(Commands.runOnce(
+		// () -> Drive.mInstance.getGeneratedDrive().seedFieldCentric(),
+		// Drive.mInstance)
+		// .ignoringDisable(true));
 
 		driver.start()
 				.onTrue(Commands.runOnce(() -> Robot.resetPoseForAuto = true).ignoringDisable(true));
@@ -44,7 +45,9 @@ public class ControlBoard extends SubsystemBase {
 
 	public void driverControls() {
 		driver.a()
-				.onTrue(Superstructure.mInstance.exampleCommand());
+				.onTrue(Superstructure.mInstance.exampleCommand().onlyWhile(driver.a()));
+		driver.b()
+				.onTrue(Superstructure.mInstance.testCommand().onlyWhile(driver.b()));
 	}
 
 	public void bringupControls() {
