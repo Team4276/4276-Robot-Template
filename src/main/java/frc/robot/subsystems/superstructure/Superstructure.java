@@ -2,7 +2,6 @@ package frc.robot.subsystems.superstructure;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,11 +13,6 @@ public class Superstructure extends SubsystemBase {
     @Override
     public void periodic() {
 
-    }
-
-    @Override
-    public void initSendable(SendableBuilder builder) {
-        super.initSendable(builder);
     }
 
     public Command exampleCommand() { // TODO: check if works on button hold
