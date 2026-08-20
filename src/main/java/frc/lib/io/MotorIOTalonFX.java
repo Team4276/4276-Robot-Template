@@ -66,25 +66,45 @@ public class MotorIOTalonFX extends MotorIO {
 		inputs.setPointType = Mode.IDLE;
 		inputs.setPointValueAsDouble = 0.0;
 
-		inputs.position[0] = main.getPosition().getValue();
-		inputs.velocity[0] = main.getVelocity().getValue();
-		inputs.statorCurrent[0] = main.getStatorCurrent().getValue();
-		inputs.supplyCurrent[0] = main.getSupplyCurrent().getValue();
-		inputs.motorVoltage[0] = main.getMotorVoltage().getValue();
-		inputs.motorTemperature[0] = main.getDeviceTemp().getValue();
-		inputs.acceleration[0] = main.getAcceleration().getValue();
+		inputs.position[0] = main.getPosition().getValue().baseUnitMagnitude();
+		inputs.velocity[0] = main.getVelocity().getValue().baseUnitMagnitude();
+		inputs.statorCurrent[0] = main.getStatorCurrent().getValue().baseUnitMagnitude();
+		inputs.supplyCurrent[0] = main.getSupplyCurrent().getValue().baseUnitMagnitude();
+		inputs.motorVoltage[0] = main.getMotorVoltage().getValue().baseUnitMagnitude();
+		inputs.motorTemperature[0] = main.getDeviceTemp().getValue().baseUnitMagnitude();
+		inputs.acceleration[0] = main.getAcceleration().getValue().baseUnitMagnitude();
 
 		for (int i = 0; i < followers.length; i++) {
-			inputs.position[i + 1] = followers[i].getPosition().getValue();
-			inputs.velocity[i + 1] = followers[i].getVelocity().getValue();
-			inputs.statorCurrent[i + 1] = followers[i].getStatorCurrent().getValue();
-			inputs.supplyCurrent[i + 1] = followers[i].getSupplyCurrent().getValue();
-			inputs.motorVoltage[i + 1] = followers[i].getMotorVoltage().getValue();
-			inputs.motorTemperature[i + 1] = followers[i].getDeviceTemp().getValue();
-			inputs.acceleration[i + 1] = followers[i].getAcceleration().getValue();
+			inputs.position[i + 1] = followers[i].getPosition().getValue().baseUnitMagnitude();
+			inputs.velocity[i + 1] = followers[i].getVelocity().getValue().baseUnitMagnitude();
+			inputs.statorCurrent[i + 1] = followers[i].getStatorCurrent().getValue().baseUnitMagnitude();
+			inputs.supplyCurrent[i + 1] = followers[i].getSupplyCurrent().getValue().baseUnitMagnitude();
+			inputs.motorVoltage[i + 1] = followers[i].getMotorVoltage().getValue().baseUnitMagnitude();
+			inputs.motorTemperature[i + 1] = followers[i].getDeviceTemp().getValue().baseUnitMagnitude();
+			inputs.acceleration[i + 1] = followers[i].getAcceleration().getValue().baseUnitMagnitude();
 		}
 
-		inputs.pidVoltage = Units.Volts.of(main.getClosedLoopOutput().getValue());
+		inputs.pidVoltage = main.getClosedLoopOutput().getValue();
+
+		// inputs.position[0] = main.getPosition().getValue();
+		// inputs.velocity[0] = main.getVelocity().getValue();
+		// inputs.statorCurrent[0] = main.getStatorCurrent().getValue();
+		// inputs.supplyCurrent[0] = main.getSupplyCurrent().getValue();
+		// inputs.motorVoltage[0] = main.getMotorVoltage().getValue();
+		// inputs.motorTemperature[0] = main.getDeviceTemp().getValue();
+		// inputs.acceleration[0] = main.getAcceleration().getValue();
+
+		// for (int i = 0; i < followers.length; i++) {
+		// 	inputs.position[i + 1] = followers[i].getPosition().getValue();
+		// 	inputs.velocity[i + 1] = followers[i].getVelocity().getValue();
+		// 	inputs.statorCurrent[i + 1] = followers[i].getStatorCurrent().getValue();
+		// 	inputs.supplyCurrent[i + 1] = followers[i].getSupplyCurrent().getValue();
+		// 	inputs.motorVoltage[i + 1] = followers[i].getMotorVoltage().getValue();
+		// 	inputs.motorTemperature[i + 1] = followers[i].getDeviceTemp().getValue();
+		// 	inputs.acceleration[i + 1] = followers[i].getAcceleration().getValue();
+		// }
+
+		// inputs.pidVoltage = Units.Volts.of(main.getClosedLoopOutput().getValue());
 
 		inputs.configFailed = false;
 	}

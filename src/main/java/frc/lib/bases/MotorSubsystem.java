@@ -17,6 +17,8 @@ import frc.lib.util.TunableNumber;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
+import org.littletonrobotics.junction.Logger;
+
 /**
  * Base subsystem for any subsystem that uses motors.
  */
@@ -144,6 +146,7 @@ public class MotorSubsystem<IO extends MotorIO> extends SubsystemBase {
 	@Override
 	public void periodic() {
 		io.updateInputs();
+		Logger.processInputs(name, io.inputs);
 		outputTelemetry();
 		if (DriverStation.isDisabled() && tuningMode == true) {
 			if (kP0.hasChanged()

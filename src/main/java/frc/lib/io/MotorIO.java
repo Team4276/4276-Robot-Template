@@ -25,7 +25,7 @@ import org.littletonrobotics.junction.AutoLog;
 public abstract class MotorIO {
 	public final AngleUnit unitType;
 	public final TimeUnit time;
-	protected final MotorIOInputs inputs;
+	public final MotorIOInputsAutoLogged inputs;
 	public final int numFollowers;
 	private Setpoint setpoint = Setpoint.withNeutralSetpoint();
 	private boolean enabled = true;
@@ -36,15 +36,24 @@ public abstract class MotorIO {
 		public Mode setPointType = Mode.IDLE;
 		public double setPointValueAsDouble = 0.0;
 
-		public AngularVelocity[] velocity = { BaseUnits.AngleUnit.of(0.0).per(Units.Second) };
-		public Angle[] position = { BaseUnits.AngleUnit.of(0.0) };
-		public Current[] statorCurrent = { BaseUnits.CurrentUnit.of(0.0) };
-		public Current[] supplyCurrent = { BaseUnits.CurrentUnit.of(0.0) };
-		public Voltage[] motorVoltage = { BaseUnits.VoltageUnit.of(0.0) };
-		public Voltage pidVoltage = BaseUnits.VoltageUnit.of(0.0);
-		public Temperature[] motorTemperature = { BaseUnits.TemperatureUnit.of(0.0) };
-		public AngularAcceleration[] acceleration = {
-				BaseUnits.AngleUnit.of(0.0).per(Units.Seconds).per(Units.Seconds) };
+		public double[] velocity = { 0.0 };
+		public double[] position = { 0.0 };
+		public double[] statorCurrent = { 0.0 };
+		public double[] supplyCurrent = { 0.0 };
+		public double[] motorVoltage = { 0.0 };
+		public double pidVoltage = 0.0;
+		public double[] motorTemperature = { 0.0 };
+		public double[] acceleration = { 0.0 };
+
+		// public AngularVelocity[] velocity = { BaseUnits.AngleUnit.of(0.0).per(Units.Second) };
+		// public Angle[] position = { BaseUnits.AngleUnit.of(0.0) };
+		// public Current[] statorCurrent = { BaseUnits.CurrentUnit.of(0.0) };
+		// public Current[] supplyCurrent = { BaseUnits.CurrentUnit.of(0.0) };
+		// public Voltage[] motorVoltage = { BaseUnits.VoltageUnit.of(0.0) };
+		// public Voltage pidVoltage = BaseUnits.VoltageUnit.of(0.0);
+		// public Temperature[] motorTemperature = { BaseUnits.TemperatureUnit.of(0.0) };
+		// public AngularAcceleration[] acceleration = {
+		// 		BaseUnits.AngleUnit.of(0.0).per(Units.Seconds).per(Units.Seconds) };
 
 		public boolean configFailed = false;
 	}
@@ -234,7 +243,7 @@ public abstract class MotorIO {
 	protected MotorIO(AngleUnit unit, TimeUnit time, int numFollowers) {
 		this.unitType = unit;
 		this.time = time;
-		inputs = new MotorIOInputs();
+		inputs = new MotorIOInputsAutoLogged();
 		this.numFollowers = numFollowers;
 	}
 
@@ -244,7 +253,7 @@ public abstract class MotorIO {
 	 * @return Velocity of mechanism.
 	 */
 	public AngularVelocity getVelocity() {
-		return inputs.velocity[0];
+		return BaseUnits.AngleUnit.of(inputs.velocity[0]).per(Units.Second);
 	}
 
 	/**
@@ -253,7 +262,7 @@ public abstract class MotorIO {
 	 * @return Position of mechanism.
 	 */
 	public Angle getPosition() {
-		return inputs.position[0];
+		return BaseUnits.AngleUnit.of(inputs.position[0]);
 	}
 
 	/**
@@ -262,7 +271,7 @@ public abstract class MotorIO {
 	 * @return Stator current.
 	 */
 	public Current getStatorCurrent() {
-		return inputs.statorCurrent[0];
+		return BaseUnits.CurrentUnit.of(inputs.statorCurrent[0]);
 	}
 
 	/**
@@ -271,7 +280,7 @@ public abstract class MotorIO {
 	 * @return Supply current.
 	 */
 	public Current getSupplyCurrent() {
-		return inputs.supplyCurrent[0];
+		return BaseUnits.CurrentUnit.of(inputs.supplyCurrent[0]);
 	}
 
 	/**
@@ -280,7 +289,7 @@ public abstract class MotorIO {
 	 * @return Output voltage.
 	 */
 	public Voltage getMotorVoltage() {
-		return inputs.motorVoltage[0];
+		return BaseUnits.VoltageUnit.of(inputs.motorVoltage[0]);
 	}
 
 	/**
