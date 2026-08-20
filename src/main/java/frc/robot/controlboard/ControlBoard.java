@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.io.MotorIO.Mode;
 import frc.lib.io.MotorIO.Setpoint;
@@ -24,6 +25,7 @@ public class ControlBoard extends SubsystemBase {
 
 	private CommandXboxController driver = new CommandXboxController(ControlBoardConstants.kDriverControllerPort);
 	private CommandXboxController operator = new CommandXboxController(ControlBoardConstants.kOperatorControllerPort);
+	private CommandGenericHID keyboard0 = new CommandGenericHID(0);
 
 	public void configureBindings() {
 		// Drive.mInstance.setDefaultCommand(Drive.mInstance.followSwerveRequestCommand(
@@ -44,10 +46,12 @@ public class ControlBoard extends SubsystemBase {
 	}
 
 	public void driverControls() {
-		driver.a()
-				.onTrue(Superstructure.mInstance.exampleCommand().onlyWhile(driver.a()));
-		driver.b()
-				.onTrue(Superstructure.mInstance.testCommand().onlyWhile(driver.b()));
+		keyboard0.button(1)
+				.onTrue(Superstructure.mInstance.exampleCommand().onlyWhile(keyboard0.button(1)));
+		keyboard0.button(2)
+				.onTrue(Superstructure.mInstance.testCommand().onlyWhile(keyboard0.button(2)));
+
+		
 	}
 
 	public void bringupControls() {

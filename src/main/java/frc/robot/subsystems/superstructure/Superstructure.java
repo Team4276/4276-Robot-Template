@@ -21,19 +21,19 @@ public class Superstructure extends SubsystemBase {
         super.initSendable(builder);
     }
 
-    public Command exampleCommand() {
+    public Command exampleCommand() { // TODO: check if works on button hold
         return ExampleSubsystem.mInstance.setpointCommand(ExampleSubsystem.EXAMPLE_SETPOINT)
-                .handleInterrupt(() -> {
+                .finallyDo(() -> {
                     ExampleSubsystem.mInstance.applySetpoint(ExampleSubsystem.IDLE);
                 })
                 .withName("Example Command");
     }
 
     public Command testCommand() {
-        return Commands.runOnce(() -> {
+        return Commands.runEnd(() -> {
             Logger.recordOutput("Superstructure/Test", true);
-        })
-                .handleInterrupt(() -> {
+        },
+                () -> {
                     Logger.recordOutput("Superstructure/Test", false);
                 })
                 .withName("Test Command");
