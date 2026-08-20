@@ -23,9 +23,11 @@ import frc.robot.subsystems.superstructure.Superstructure;
 public class ControlBoard extends SubsystemBase {
 	public static final ControlBoard mInstance = new ControlBoard();
 
-	private CommandXboxController driver = new CommandXboxController(ControlBoardConstants.kDriverControllerPort);
-	private CommandXboxController operator = new CommandXboxController(ControlBoardConstants.kOperatorControllerPort);
-	private CommandGenericHID keyboard0 = new CommandGenericHID(0);
+	public static final CommandXboxController mDriver = new CommandXboxController(
+			ControlBoardConstants.kDriverControllerPort);
+	public static final CommandXboxController mOperator = new CommandXboxController(
+			ControlBoardConstants.kOperatorControllerPort);
+	public static final CommandGenericHID mKeyboard0 = new CommandGenericHID(0);
 
 	public void configureBindings() {
 		// Drive.mInstance.setDefaultCommand(Drive.mInstance.followSwerveRequestCommand(
@@ -36,7 +38,9 @@ public class ControlBoard extends SubsystemBase {
 		// Drive.mInstance)
 		// .ignoringDisable(true));
 
-		driver.start()
+		Drive.mInstance.setDefaultCommand(Drive.mInstance.drive(DriveConstants.kTeleopAngularVelocityStream));
+
+		mDriver.start()
 				.onTrue(Commands.runOnce(() -> Robot.resetPoseForAuto = true).ignoringDisable(true));
 
 		driverControls();
@@ -46,16 +50,15 @@ public class ControlBoard extends SubsystemBase {
 	}
 
 	public void driverControls() {
-		keyboard0.button(1)
-				.onTrue(Superstructure.mInstance.exampleCommand().onlyWhile(keyboard0.button(1)));
-		keyboard0.button(2)
-				.onTrue(Superstructure.mInstance.testCommand().onlyWhile(keyboard0.button(2)));
+		mKeyboard0.button(1)
+				.onTrue(Superstructure.mInstance.exampleCommand().onlyWhile(mKeyboard0.button(1)));
+		mKeyboard0.button(2)
+				.onTrue(Superstructure.mInstance.testCommand().onlyWhile(mKeyboard0.button(2)));
 
-		
 	}
 
 	public void bringupControls() {
-		driver.a().onTrue(ExampleSubsystem.mInstance.setpointCommand(ExampleSubsystem.EXAMPLE_SETPOINT));
+		mDriver.a().onTrue(ExampleSubsystem.mInstance.setpointCommand(ExampleSubsystem.EXAMPLE_SETPOINT));
 	}
 
 	public void jogControls() {
@@ -67,16 +70,28 @@ public class ControlBoard extends SubsystemBase {
 				Mode.VOLTAGE,
 				Setpoint.withNeutralSetpoint(),
 				Milliseconds.of(50.0),
-				operator.a(),
-				operator.b(),
-				operator.rightBumper());
+				mOperator.a(),
+				mOperator.b(),
+				mOperator.rightBumper());
 	}
 
 	public void tuningControls() {
+		mDriver
+				.y()
+				.whileTrue(Drive.mInstance.sysIdModule("frontleft"));
+		mDriver
+				.b()
+				.whileTrue(Drive.mInstance.sysIdModule("frontright"));
+		mDriver
+				.a()
+				.whileTrue(Drive.mInstance.sysIdModule("backright"));
+		mDriver
+				.x()
+				.whileTrue(Drive.mInstance.sysIdModule("backleft"));
 	}
 
 	public Command rumbleCommand(Time duration) {
-		return rumbleCommand(driver, duration);
+		return rumbleCommand(mDriver, duration);
 	}
 
 	public Command rumbleCommand(CommandXboxController controller, Time duration) {
@@ -96,7 +111,7 @@ public class ControlBoard extends SubsystemBase {
 	}
 
 	public void setRumble(boolean on) {
-		setRumble(driver, on);
+		setRumble(mDriver, on);
 	}
 
 	public void setRumble(CommandXboxController controller, boolean on) {
