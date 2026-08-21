@@ -53,7 +53,8 @@ public class Util {
 	/**
 	 * Prevent this class from being instantiated.
 	 */
-	private Util() {}
+	private Util() {
+	}
 
 	public static double copySignOrZero(double magnitude, double sign) {
 		return sign != 0 ? Math.copySign(magnitude, sign) : 0.0;
@@ -142,8 +143,10 @@ public class Util {
 	}
 
 	public static boolean safeEqualsCheck(Object a, Object b) {
-		if (a == null && b == null) return true;
-		if (a == null || b == null) return false;
+		if (a == null && b == null)
+			return true;
+		if (a == null || b == null)
+			return false;
 		return a.equals(b);
 	}
 
@@ -165,13 +168,15 @@ public class Util {
 	}
 
 	// public static Translation3d flipRedBlue(Translation3d original) {
-	// 	return new Translation3d(
-	// 			FieldLayout.kFieldLength.minus(original.getMeasureX()), original.getMeasureY(), original.getMeasureZ());
+	// return new Translation3d(
+	// FieldLayout.kFieldLength.minus(original.getMeasureX()),
+	// original.getMeasureY(), original.getMeasureZ());
 	// }
 
 	// public static Pose2d flipRedBlue(Pose2d original) {
-	// 	return new Pose2d(
-	// 			FieldLayout.kFieldLength.minus(original.getMeasureX()), original.getMeasureY(), new Rotation2d());
+	// return new Pose2d(
+	// FieldLayout.kFieldLength.minus(original.getMeasureX()),
+	// original.getMeasureY(), new Rotation2d());
 	// }
 
 	public static <T> Supplier<T> memoizeByIteration(IntSupplier iteration, Supplier<T> delegate) {
@@ -287,8 +292,7 @@ public class Util {
 		}
 	}
 
-	public static class InterpolatingMeasureMap<
-					J extends Measure<U>, U extends Unit, K extends Measure<Q>, Q extends Unit>
+	public static class InterpolatingMeasureMap<J extends Measure<U>, U extends Unit, K extends Measure<Q>, Q extends Unit>
 			extends InterpolatingTreeMap<J, K> {
 		public InterpolatingMeasureMap() {
 			super(new MeasureInverseInterpolable<J, U>(), new MeasureInterpolable<K, Q>());
@@ -349,8 +353,8 @@ public class Util {
 				}
 				prevState = poseList.get(i);
 				nextState = poseList.get(i + 2);
-				if (prevState.getFirst().getTranslation().getDistance(pose.getTranslation())
-						< nextState.getFirst().getTranslation().getDistance(pose.getTranslation())) {
+				if (prevState.getFirst().getTranslation().getDistance(pose.getTranslation()) < nextState.getFirst()
+						.getTranslation().getDistance(pose.getTranslation())) {
 					nextState = poseList.get(i + 1);
 					break;
 				}
@@ -359,10 +363,10 @@ public class Util {
 			double distanceToPrevPose = prevState.getFirst().getTranslation().getDistance(pose.getTranslation());
 			double distanceToNextPose = nextState.getFirst().getTranslation().getDistance(pose.getTranslation());
 			double percentToNextPose = (prevState
-									.getFirst()
-									.getTranslation()
-									.getDistance(nextState.getFirst().getTranslation())
-							- distanceToNextPose)
+					.getFirst()
+					.getTranslation()
+					.getDistance(nextState.getFirst().getTranslation())
+					- distanceToNextPose)
 					/ (distanceToPrevPose + distanceToNextPose);
 
 			Time timeDelta = nextState.getSecond().minus(prevState.getSecond());
@@ -390,12 +394,11 @@ public class Util {
 			}
 
 			Time timeDelta = nextState.getSecond().plus(prevState.getSecond());
-			double percentIntoDelta =
-					time.minus(prevState.getSecond()).in(BaseUnits.TimeUnit) / (timeDelta.in(BaseUnits.TimeUnit));
+			double percentIntoDelta = time.minus(prevState.getSecond()).in(BaseUnits.TimeUnit)
+					/ (timeDelta.in(BaseUnits.TimeUnit));
 			// SmartDashboard.putNumber("Auto Align Traj/Percent As Delta",
 			// percentIntoDelta);
-			Transform2d prevToTimePose =
-					nextState.getFirst().minus(prevState.getFirst()).times(percentIntoDelta);
+			Transform2d prevToTimePose = nextState.getFirst().minus(prevState.getFirst()).times(percentIntoDelta);
 			return prevState.getFirst().plus(prevToTimePose);
 		}
 
@@ -443,14 +446,12 @@ public class Util {
 
 		Translation2d point0 = center1.plus((delta.times(a).div(distance)));
 
-		Translation2d solution1 =
-				point0.plus(new Translation2d(delta.getY(), delta.unaryMinus().getX())
-						.times(h)
-						.div(distance));
-		Translation2d solution2 =
-				point0.plus(new Translation2d(delta.unaryMinus().getY(), delta.getX())
-						.times(h)
-						.div(distance));
+		Translation2d solution1 = point0.plus(new Translation2d(delta.getY(), delta.unaryMinus().getX())
+				.times(h)
+				.div(distance));
+		Translation2d solution2 = point0.plus(new Translation2d(delta.unaryMinus().getY(), delta.getX())
+				.times(h)
+				.div(distance));
 
 		allPoints.add(solution1);
 
@@ -483,9 +484,10 @@ public class Util {
 	}
 
 	// public static Command smartDashCommand(String message) {
-	// 	return Commands.defer(
-	// 			() -> Commands.runOnce(() -> SmartDashboard.putNumber(message, Timer.getFPGATimestamp())),
-	// 			getEmptySubsystemSet());
+	// return Commands.defer(
+	// () -> Commands.runOnce(() -> SmartDashboard.putNumber(message,
+	// Timer.getFPGATimestamp())),
+	// getEmptySubsystemSet());
 	// }
 
 	public static <M extends Measure<U>, U extends Unit> M min(M x, M y) {
@@ -538,8 +540,8 @@ public class Util {
 		double vsy = dy / t - vry;
 
 		// Required facing angle (field-relative)
-		Angle fieldRelativeDesiredAngle =
-				Radians.of(MathUtil.angleModulus(Math.atan2(vsy, vsx))).plus(Radians.of(Math.PI));
+		Angle fieldRelativeDesiredAngle = Radians.of(MathUtil.angleModulus(Math.atan2(vsy, vsx)))
+				.plus(Radians.of(Math.PI));
 
 		return fieldRelativeDesiredAngle;
 	}
@@ -563,16 +565,18 @@ public class Util {
 		return 0.5 * raisedAccel * timeToRaise * timeToRaise;
 	}
 
-	// public static Translation3d addToTranslation3d(Translation3d translation, TranslationAxis3d axis, Distance offset) {
-	// 	return switch (axis) {
-	// 		case X -> translation.plus(new Translation3d(offset.in(Meters), 0.0, 0.0));
-	// 		case Y -> translation.plus(new Translation3d(0.0, offset.in(Meters), 0.0));
-	// 		case Z -> translation.plus(new Translation3d(0.0, 0.0, offset.in(Meters)));
-	// 	};
+	// public static Translation3d addToTranslation3d(Translation3d translation,
+	// TranslationAxis3d axis, Distance offset) {
+	// return switch (axis) {
+	// case X -> translation.plus(new Translation3d(offset.in(Meters), 0.0, 0.0));
+	// case Y -> translation.plus(new Translation3d(0.0, offset.in(Meters), 0.0));
+	// case Z -> translation.plus(new Translation3d(0.0, 0.0, offset.in(Meters)));
+	// };
 	// }
 
-	// public static Translation3d addToTranslation3d(TranslationAxis3d axis, Distance offset) {
-	// 	return addToTranslation3d(Translation3d.kZero, axis, offset);
+	// public static Translation3d addToTranslation3d(TranslationAxis3d axis,
+	// Distance offset) {
+	// return addToTranslation3d(Translation3d.kZero, axis, offset);
 	// }
 
 	public static Translation3d convertOnshapeToWPI(Translation3d translation) {
@@ -580,17 +584,16 @@ public class Util {
 	}
 
 	// public static Transform3d convertOnshapeToWPI(Transform3d transform) {
-	// 	return new Transform3dObjectBuilder(transform)
-	// 			.withX(transform.getMeasureY())
-	// 			.withY(transform.getMeasureX())
-	// 			.build();
+	// return new Transform3dObjectBuilder(transform)
+	// .withX(transform.getMeasureY())
+	// .withY(transform.getMeasureX())
+	// .build();
 	// }
 
 	public static boolean testCurrentPose(Pose2d targetPose, Pose2d currentPose) {
 		return Math.abs(targetPose.getX() - currentPose.getX()) <= 0.2
 				&& Math.abs(targetPose.getY() - currentPose.getY()) <= 0.2
 				&& Math.abs(targetPose.getRotation().getDegrees()
-								- currentPose.getRotation().getDegrees())
-						<= 5.0;
+						- currentPose.getRotation().getDegrees()) <= 5.0;
 	}
 }

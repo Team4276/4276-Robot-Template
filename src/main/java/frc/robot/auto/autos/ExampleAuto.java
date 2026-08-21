@@ -26,5 +26,5 @@ public class ExampleAuto extends AutoModeBase {
 	public Pose2d getInitialPose() {
 		return startToFirstPOI.getInitialPose().get();
 	}
-    
+
 }

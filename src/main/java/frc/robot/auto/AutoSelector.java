@@ -15,9 +15,9 @@ public class AutoSelector {
 
     public AutoSelector(AutoFactory autoFactory) {
         mAutoChooser.addRoutine("Example Auto", () -> generateAuto(new ExampleAuto(autoFactory)));
-		mAutoChooser.addRoutine("Do Nothing", () -> autoFactory.newRoutine("Do Nothing"));
+        mAutoChooser.addRoutine("Do Nothing", () -> autoFactory.newRoutine("Do Nothing"));
 
-		SmartDashboard.putData(mAutoChooser);
+        SmartDashboard.putData(mAutoChooser);
     }
 
     private AutoRoutine generateAuto(AutoModeBase auto) {
@@ -29,9 +29,9 @@ public class AutoSelector {
         return mAutoChooser.selectedCommand();
     }
 
-	public AutoChooser getAutoChooser() {
-		return mAutoChooser;
-	}
+    public AutoChooser getAutoChooser() {
+        return mAutoChooser;
+    }
 
     public Pose2d getSelectedAutoStartingPose() {
         return startPose;

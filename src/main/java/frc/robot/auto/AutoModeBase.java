@@ -10,7 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Robot;
+import frc.lib.util.AllianceFlipUtil;
 import frc.robot.game.FieldLayout;
 import java.util.Arrays;
 import java.util.List;
@@ -52,8 +52,8 @@ public class AutoModeBase {
 	private static SwerveSample mirrorSwerveSampleAcrossY(SwerveSample sample, double fieldWidthMeters) {
 		double[] fx = sample.moduleForcesX();
 		double[] fy = sample.moduleForcesY();
-		double[] mirroredFx = new double[] {fx[1], fx[0], fx[3], fx[2]};
-		double[] mirroredFy = new double[] {-fy[1], -fy[0], -fy[3], -fy[2]};
+		double[] mirroredFx = new double[] { fx[1], fx[0], fx[3], fx[2] };
+		double[] mirroredFy = new double[] { -fy[1], -fy[0], -fy[3], -fy[2] };
 
 		return new SwerveSample(
 				sample.t,
@@ -94,17 +94,17 @@ public class AutoModeBase {
 		routine.active().onTrue(Commands.sequence(steps).withName("Auto Routine Sequential Command Group"));
 	}
 
-    //TODO: impl
+	// TODO: impl
 	public void logTrajectories(AutoTrajectory... trajectories) {
 		List<AutoTrajectory> list = Arrays.asList(trajectories);
 		for (int i = 1; i <= list.size(); ++i) {
-			if (Robot.isRedAlliance) {
+			if (AllianceFlipUtil.shouldFlip()) {
 				// LogUtil.recordTrajectory(
-				// 		"Autos/Choreo Path " + i,
-				// 		list.get(i - 1).getRawTrajectory().flipped());
+				// "Autos/Choreo Path " + i,
+				// list.get(i - 1).getRawTrajectory().flipped());
 			} else {
 				// LogUtil.recordTrajectory(
-				// 		"Autos/Choreo Path " + i, list.get(i - 1).getRawTrajectory());
+				// "Autos/Choreo Path " + i, list.get(i - 1).getRawTrajectory());
 			}
 		}
 	}

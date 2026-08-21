@@ -20,6 +20,7 @@ import frc.lib.util.Util;
 public class FlywheelMotorSubsystem<IO extends MotorIO> extends MotorSubsystem<IO> {
 	protected final AngularVelocity epsilonThreshold;
 	protected final Debouncer debouncer;
+
 	/**
 	 * Creates a FlywheelMotorSubsystem with a MotorIO, name for telemetry, and
 	 * threshold for differences in measurement.
@@ -38,6 +39,7 @@ public class FlywheelMotorSubsystem<IO extends MotorIO> extends MotorSubsystem<I
 	public FlywheelMotorSubsystem(IO io, String name, AngularVelocity epsilonThreshold, Time debounceTime) {
 		this(io, name, epsilonThreshold, debounceTime, false);
 	}
+
 	/**
 	 * Gets whether or not the subsystem is within an acceptable threshold of a
 	 * provided velocity.
@@ -115,7 +117,7 @@ public class FlywheelMotorSubsystem<IO extends MotorIO> extends MotorSubsystem<I
 	 */
 	public Command setpointCommandWithWait(Setpoint setpoint) {
 		return waitForVelocityCommand(
-						BaseUnits.AngleUnit.per(BaseUnits.TimeUnit).of(setpoint.baseUnits))
+				BaseUnits.AngleUnit.per(BaseUnits.TimeUnit).of(setpoint.baseUnits))
 				.deadlineFor(setpointCommand(setpoint));
 	}
 

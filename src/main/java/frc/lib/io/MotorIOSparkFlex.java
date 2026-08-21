@@ -83,21 +83,27 @@ public class MotorIOSparkFlex extends MotorIO {
 		inputs.pidVoltage = 0.0;
 
 		// inputs.position[0] = Units.Rotations.of(main.getEncoder().getPosition());
-		// inputs.velocity[0] = Units.RotationsPerSecond.of(main.getEncoder().getVelocity());
+		// inputs.velocity[0] =
+		// Units.RotationsPerSecond.of(main.getEncoder().getVelocity());
 		// inputs.statorCurrent[0] = Units.Amps.of(main.getOutputCurrent());
 		// inputs.supplyCurrent[0] = Units.Amps.of(main.getOutputCurrent());
-		// inputs.motorVoltage[0] = Units.Volts.of(main.getBusVoltage() * main.getAppliedOutput());
+		// inputs.motorVoltage[0] = Units.Volts.of(main.getBusVoltage() *
+		// main.getAppliedOutput());
 		// inputs.motorTemperature[0] = Units.Celsius.of(main.getMotorTemperature());
 		// inputs.acceleration[0] = Units.RotationsPerSecondPerSecond.of(0.0);
 
 		// for (int i = 0; i < followers.length; i++) {
-		// 	inputs.position[i + 1] = Units.Rotations.of(followers[i].getEncoder().getPosition());
-		// 	inputs.velocity[i + 1] = Units.RotationsPerSecond.of(followers[i].getEncoder().getVelocity());
-		// 	inputs.statorCurrent[i + 1] = Units.Amps.of(followers[i].getOutputCurrent());
-		// 	inputs.supplyCurrent[i + 1] = Units.Amps.of(followers[i].getOutputCurrent());
-		// 	inputs.motorVoltage[i + 1] = Units.Volts.of(followers[i].getBusVoltage() * followers[i].getAppliedOutput());
-		// 	inputs.motorTemperature[i + 1] = Units.Celsius.of(followers[i].getMotorTemperature());
-		// 	inputs.acceleration[i + 1] = Units.RotationsPerSecondPerSecond.of(0.0);
+		// inputs.position[i + 1] =
+		// Units.Rotations.of(followers[i].getEncoder().getPosition());
+		// inputs.velocity[i + 1] =
+		// Units.RotationsPerSecond.of(followers[i].getEncoder().getVelocity());
+		// inputs.statorCurrent[i + 1] = Units.Amps.of(followers[i].getOutputCurrent());
+		// inputs.supplyCurrent[i + 1] = Units.Amps.of(followers[i].getOutputCurrent());
+		// inputs.motorVoltage[i + 1] = Units.Volts.of(followers[i].getBusVoltage() *
+		// followers[i].getAppliedOutput());
+		// inputs.motorTemperature[i + 1] =
+		// Units.Celsius.of(followers[i].getMotorTemperature());
+		// inputs.acceleration[i + 1] = Units.RotationsPerSecondPerSecond.of(0.0);
 		// }
 
 		// inputs.pidVoltage = Units.Volts.of(0.0);

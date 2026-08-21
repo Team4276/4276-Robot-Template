@@ -66,13 +66,14 @@ public abstract class MechanismSim {
 	/**
 	 * Sets the simulation to be in a certain state.
 	 *
-	 * @param angle Angle to set.
+	 * @param angle    Angle to set.
 	 * @param velocity Velocity to set.
 	 */
 	public abstract void setState(Angle angle, AngularVelocity velocity);
 
 	/**
-	 * Simulates the mechanism based on the change in time since the last time it was simulated.
+	 * Simulates the mechanism based on the change in time since the last time it
+	 * was simulated.
 	 */
 	public void simulate() {
 		Time currentTimestamp = Units.Seconds.of(Timer.getFPGATimestamp());

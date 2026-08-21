@@ -33,7 +33,7 @@ import yams.motorcontrollers.SmartMotorControllerConfig.TelemetryVerbosity;
 public class Drive extends SubsystemBase {
     public static final Drive mInstance = new Drive();
 
-    private SwerveDrive swerveDrive;
+    private SwerveDrive mSwerveDrive;
 
     private Drive() {
         SmartDashboard.putData(this);
@@ -42,7 +42,7 @@ public class Drive extends SubsystemBase {
                 .withSubsystem(this)
                 .withTelemetry(TelemetryVerbosity.HIGH);
         try {
-            swerveDrive = new SwerveParser(new File(Filesystem.getDeployDirectory(), "swerve/base"))
+            mSwerveDrive = new SwerveParser(new File(Filesystem.getDeployDirectory(), "swerve/base"))
                     .createSwerveDrive(cfg);
         } catch (Exception e) {
             System.out.println("Error creating swerve drive");
@@ -51,12 +51,12 @@ public class Drive extends SubsystemBase {
         }
 
         // TODO Vision
-        swerveDrive.addVisionMeasurement(getPose(), 0);
+        mSwerveDrive.addVisionMeasurement(getPose(), 0);
     }
 
     @Override
     public void periodic() {
-        swerveDrive.updateTelemetry();
+        mSwerveDrive.updateTelemetry();
 
         // TODO Add logging for all fields in high verbosity (replay not possible on
         // hardware level ;-;)
@@ -65,7 +65,7 @@ public class Drive extends SubsystemBase {
 
     @Override
     public void simulationPeriodic() {
-        swerveDrive.simIterate();
+        mSwerveDrive.simIterate();
     }
 
     // TODO this doesn't work btw... need to do this through an io getter which
@@ -73,11 +73,11 @@ public class Drive extends SubsystemBase {
     // elsewhere...
     @AutoLogOutput(key = "Drive/Pose")
     public Pose2d getPose() {
-        return swerveDrive.getPose();
+        return mSwerveDrive.getPose();
     }
 
     public void resetPose(Pose2d pose) {
-        swerveDrive.resetOdometry(pose);
+        mSwerveDrive.resetOdometry(pose);
     }
 
     public void zeroGyro() {
@@ -89,13 +89,13 @@ public class Drive extends SubsystemBase {
     }
 
     public SwerveInputStream getAngularVelocityStream(DoubleSupplier x, DoubleSupplier y, DoubleSupplier rot) {
-        return new SwerveInputStream(swerveDrive, x, y, rot);
+        return new SwerveInputStream(mSwerveDrive, x, y, rot);
     }
 
     public Command drive(ChassisSpeeds speeds) {
-        return swerveDrive
+        return mSwerveDrive
                 .drive(() -> ChassisSpeeds.fromFieldRelativeSpeeds(speeds,
-                        new Rotation2d(swerveDrive.getGyroAngle())));
+                        new Rotation2d(mSwerveDrive.getGyroAngle())));
     }
 
     public void followChoreoTrajectory(SwerveSample sample) {
@@ -117,8 +117,8 @@ public class Drive extends SubsystemBase {
         Logger.recordOutput(
                 "Drive/Trajectory/SetpointSpeeds", sample.getChassisSpeeds());
 
-        swerveDrive.drive(() -> ChassisSpeeds.fromFieldRelativeSpeeds(requestedSpeeds,
-                new Rotation2d(swerveDrive.getGyroAngle())));
+        mSwerveDrive.drive(() -> ChassisSpeeds.fromFieldRelativeSpeeds(requestedSpeeds,
+                new Rotation2d(mSwerveDrive.getGyroAngle())));
     }
 
     /**
@@ -134,7 +134,7 @@ public class Drive extends SubsystemBase {
      */
     public Command sysIdModule(String moduleName) {
 
-        SwerveModule module = swerveDrive.getModule(moduleName).orElseThrow();
+        SwerveModule module = mSwerveDrive.getModule(moduleName).orElseThrow();
         SmartMotorController driveMotor = module.getDriveMotorController();
         SmartMotorController azimuthMotor = module.getAzimuthMotorController();
 

@@ -5,7 +5,8 @@ import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 /**
- * Class creating a mutable object which can be mutated dynamically through SmartDashboard
+ * Class creating a mutable object which can be mutated dynamically through
+ * SmartDashboard
  */
 public class TunableNumber implements DoubleSupplier {
 	private static final String TABLE_KEY = "TunableNumbers";
@@ -17,6 +18,7 @@ public class TunableNumber implements DoubleSupplier {
 
 	/**
 	 * Constructs a new Tunable number
+	 * 
 	 * @param smartDashboardKey key used in smartDashboard
 	 * @param defaultValue
 	 */
@@ -26,22 +28,27 @@ public class TunableNumber implements DoubleSupplier {
 		this.currentValue = defaultValue;
 		this.lastCurrentValue = currentValue;
 	}
+
 	/**
 	 * Gets the default value
+	 * 
 	 * @return
 	 */
 	public double getDefault() {
 		return defaultValue;
 	}
+
 	/**
 	 * Sets the default value
 	 * Smartdashboard puts that value into network tables with the object's key
+	 * 
 	 * @param valueToSet
 	 */
 	public void publish(double valueToSet) {
 		defaultValue = valueToSet;
 		number.setDefault(valueToSet);
 	}
+
 	/**
 	 * Gets the current value on smartdashboard
 	 */
@@ -49,6 +56,7 @@ public class TunableNumber implements DoubleSupplier {
 	public double getAsDouble() {
 		return number.getAsDouble();
 	}
+
 	/**
 	 * Checks if the current value in smartdashboard has changed
 	 * Returns true is the current value is different from the last current value

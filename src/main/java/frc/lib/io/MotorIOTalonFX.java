@@ -95,13 +95,13 @@ public class MotorIOTalonFX extends MotorIO {
 		// inputs.acceleration[0] = main.getAcceleration().getValue();
 
 		// for (int i = 0; i < followers.length; i++) {
-		// 	inputs.position[i + 1] = followers[i].getPosition().getValue();
-		// 	inputs.velocity[i + 1] = followers[i].getVelocity().getValue();
-		// 	inputs.statorCurrent[i + 1] = followers[i].getStatorCurrent().getValue();
-		// 	inputs.supplyCurrent[i + 1] = followers[i].getSupplyCurrent().getValue();
-		// 	inputs.motorVoltage[i + 1] = followers[i].getMotorVoltage().getValue();
-		// 	inputs.motorTemperature[i + 1] = followers[i].getDeviceTemp().getValue();
-		// 	inputs.acceleration[i + 1] = followers[i].getAcceleration().getValue();
+		// inputs.position[i + 1] = followers[i].getPosition().getValue();
+		// inputs.velocity[i + 1] = followers[i].getVelocity().getValue();
+		// inputs.statorCurrent[i + 1] = followers[i].getStatorCurrent().getValue();
+		// inputs.supplyCurrent[i + 1] = followers[i].getSupplyCurrent().getValue();
+		// inputs.motorVoltage[i + 1] = followers[i].getMotorVoltage().getValue();
+		// inputs.motorTemperature[i + 1] = followers[i].getDeviceTemp().getValue();
+		// inputs.acceleration[i + 1] = followers[i].getAcceleration().getValue();
 		// }
 
 		// inputs.pidVoltage = Units.Volts.of(main.getClosedLoopOutput().getValue());

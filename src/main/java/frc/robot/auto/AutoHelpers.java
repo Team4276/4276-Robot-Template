@@ -6,7 +6,7 @@ import frc.robot.subsystems.superstructure.Superstructure;
 public class AutoHelpers {
     // Add event markers and common commands/helpers here
 
-    public static Command exampleCommand(){
+    public static Command exampleCommand() {
         return Superstructure.mInstance.exampleCommand();
     }
 }

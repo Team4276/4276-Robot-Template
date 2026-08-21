@@ -11,10 +11,12 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
 /**
- * Class for simulating a rolling system powerd by one or more motors like a shooter.
+ * Class for simulating a rolling system powerd by one or more motors like a
+ * shooter.
  */
 public class RollerSim extends MechanismSim {
 	protected final FlywheelSim sim;
+
 	/**
 	 * Creates a RollerSim from provided constants.
 	 *

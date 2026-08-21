@@ -17,7 +17,8 @@ import frc.lib.util.DelayedBoolean;
 import frc.lib.util.Util;
 
 /**
- * Base subsystem for any subsystem that uses motors and requires precise position control.
+ * Base subsystem for any subsystem that uses motors and requires precise
+ * position control.
  */
 public class ServoMotorSubsystem<IO extends MotorIO> extends MotorSubsystem<IO> {
 	protected final Angle epsilonThreshold;
@@ -30,10 +31,11 @@ public class ServoMotorSubsystem<IO extends MotorIO> extends MotorSubsystem<IO> 
 	private DelayedBoolean mHomingDelay;
 
 	/**
-	 * Creates a *non-homing* ServoMotorSubsystem with a MotorIO, name for telemetry, and threshold for differences in measurement.
+	 * Creates a *non-homing* ServoMotorSubsystem with a MotorIO, name for
+	 * telemetry, and threshold for differences in measurement.
 	 *
-	 * @param io MotorIO for the subsystem.
-	 * @param name Name for telemetry.
+	 * @param io               MotorIO for the subsystem.
+	 * @param name             Name for telemetry.
 	 * @param epsilonThreshold Acceptable error range for position.
 	 */
 	public ServoMotorSubsystem(IO io, String name, Angle epsilonThreshold, boolean tuningMode) {
@@ -47,12 +49,13 @@ public class ServoMotorSubsystem<IO extends MotorIO> extends MotorSubsystem<IO> 
 	}
 
 	/**
-	 * Creates a *homing* ServoMotorSubsystem with a MotorIO, name for telemetry, and threshold for differences in measurement.
+	 * Creates a *homing* ServoMotorSubsystem with a MotorIO, name for telemetry,
+	 * and threshold for differences in measurement.
 	 *
-	 * @param io MotorIO for the subsystem.
-	 * @param name Name for telemetry.
+	 * @param io               MotorIO for the subsystem.
+	 * @param name             Name for telemetry.
 	 * @param epsilonThreshold Acceptable error range for position.
-	 * @param config Homing configuration.
+	 * @param config           Homing configuration.
 	 */
 	public ServoMotorSubsystem(
 			IO io, String name, Angle epsilonThreshold, boolean tuningMode, ServoHomingConfig config) {
@@ -73,8 +76,8 @@ public class ServoMotorSubsystem<IO extends MotorIO> extends MotorSubsystem<IO> 
 			if (mNeedsToHome && setpointNearHome() && nearHomingLocation()) {
 				mHoming = true;
 				useSoftLimits(false);
-				mHomingDelay =
-						new DelayedBoolean(Timer.getFPGATimestamp(), homingConfig.kHomingTimeout.in(Units.Seconds));
+				mHomingDelay = new DelayedBoolean(Timer.getFPGATimestamp(),
+						homingConfig.kHomingTimeout.in(Units.Seconds));
 			}
 			if (mHoming) {
 				io.applySetpoint(Setpoint.withVoltageSetpoint(homingConfig.kHomingVoltage));
@@ -95,7 +98,8 @@ public class ServoMotorSubsystem<IO extends MotorIO> extends MotorSubsystem<IO> 
 	}
 
 	/**
-	 * Determines whether the currently set setpoint is near subsystem's home position.
+	 * Determines whether the currently set setpoint is near subsystem's home
+	 * position.
 	 *
 	 * @return True if setpoint is near the home position, false if not.
 	 */
@@ -119,7 +123,8 @@ public class ServoMotorSubsystem<IO extends MotorIO> extends MotorSubsystem<IO> 
 	/**
 	 * Determines whether the subsystem is near it's position setpoint.
 	 *
-	 * @return True if currently near setpoint, false if not. Returns false if not in position control.
+	 * @return True if currently near setpoint, false if not. Returns false if not
+	 *         in position control.
 	 */
 	public boolean nearPositionSetpoint() {
 		return (getSetpoint().mode.isPositionControl()) && nearPosition(getPosition());
@@ -151,7 +156,7 @@ public class ServoMotorSubsystem<IO extends MotorIO> extends MotorSubsystem<IO> 
 	 * Determines whether the subsystem is near a given position.
 	 *
 	 * @param mechanismPosition Position to compare to.
-	 * @param epsilon Acceptable error range for position
+	 * @param epsilon           Acceptable error range for position
 	 * @return True if near provided position, false if not.
 	 */
 	public boolean nearPosition(Angle mechanismPosition, Angle epsilon) {
@@ -188,7 +193,8 @@ public class ServoMotorSubsystem<IO extends MotorIO> extends MotorSubsystem<IO> 
 	}
 
 	/**
-	 * Creates a Command that goes to a setpoint and then waits until the mechanism is the setpoint's position.
+	 * Creates a Command that goes to a setpoint and then waits until the mechanism
+	 * is the setpoint's position.
 	 *
 	 * @param mechanismPosition Position to evaluate proximity to.
 	 * @return A new Command to apply setpoint and wait.

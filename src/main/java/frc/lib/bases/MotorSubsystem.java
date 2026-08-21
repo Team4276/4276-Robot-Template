@@ -47,11 +47,14 @@ public class MotorSubsystem<IO extends MotorIO> extends SubsystemBase {
 	protected TunableNumber kV2;
 	protected TunableNumber kS2;
 	protected TunableNumber kG2;
+
 	/**
 	 * Creates a MotorSubsystem with a MotorIO and name for telemetry.
-	 * @param io MotorIO for the subsystem.
-	 * @param name Name for telemetry.
-	 * @param tuningMode Boolean determining whether the user wants to enable tuning on the fly
+	 * 
+	 * @param io         MotorIO for the subsystem.
+	 * @param name       Name for telemetry.
+	 * @param tuningMode Boolean determining whether the user wants to enable tuning
+	 *                   on the fly
 	 */
 	public MotorSubsystem(IO io, String name, boolean tuningMode) {
 		super(name);
@@ -196,6 +199,7 @@ public class MotorSubsystem<IO extends MotorIO> extends SubsystemBase {
 	public AngularVelocity getVelocity() {
 		return io.getVelocity();
 	}
+
 	/**
 	 * Gets the last read stator current of the subsystem's main motor.
 	 *
@@ -242,7 +246,8 @@ public class MotorSubsystem<IO extends MotorIO> extends SubsystemBase {
 	}
 
 	/**
-	 * Creates a one time, instantaneus command for the subsystem to go to a given Setpoint.
+	 * Creates a one time, instantaneus command for the subsystem to go to a given
+	 * Setpoint.
 	 *
 	 * @param setpoint Setpoint to go to.
 	 * @return One time Command for the subsystem.
@@ -252,7 +257,8 @@ public class MotorSubsystem<IO extends MotorIO> extends SubsystemBase {
 	}
 
 	/**
-	 * Creates a continous command for the subsystem to repeatedly go to a supplied setpoint.
+	 * Creates a continous command for the subsystem to repeatedly go to a supplied
+	 * setpoint.
 	 *
 	 * @param setpoint Supplier of setpoint to go to.
 	 * @return Continuous Command for the subsystem.
@@ -262,14 +268,16 @@ public class MotorSubsystem<IO extends MotorIO> extends SubsystemBase {
 	}
 
 	/**
-	 * Disabled this Subsystem's MotorIO. Setpoints can still be set when disabled but will not be applied until re-enabled.
+	 * Disabled this Subsystem's MotorIO. Setpoints can still be set when disabled
+	 * but will not be applied until re-enabled.
 	 */
 	public void disable() {
 		io.disable();
 	}
 
 	/**
-	 * Enables this Subsystem's MotorIO. Immediatly applies the last set setpoint including setpoints set when disabled. MotorIO is enabled by default.
+	 * Enables this Subsystem's MotorIO. Immediatly applies the last set setpoint
+	 * including setpoints set when disabled. MotorIO is enabled by default.
 	 */
 	public void enable() {
 		io.enable();

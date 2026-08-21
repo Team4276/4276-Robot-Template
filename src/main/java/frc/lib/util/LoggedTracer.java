@@ -7,7 +7,8 @@ import edu.wpi.first.wpilibj.Timer;
 
 /** Utility class for logging code execution times. */
 public class LoggedTracer {
-	private LoggedTracer() {}
+	private LoggedTracer() {
+	}
 
 	private static double startTime = -1.0;
 

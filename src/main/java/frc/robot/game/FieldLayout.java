@@ -6,7 +6,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.units.measure.Distance;
 
-public class FieldLayout {    
+public class FieldLayout {
     public static final AprilTagFieldLayout kApriltagLayout = AprilTagFieldLayout
             .loadField(AprilTagFields.k2026RebuiltWelded);
 

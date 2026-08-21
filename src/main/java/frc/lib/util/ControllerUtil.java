@@ -34,16 +34,18 @@ public class ControllerUtil {
 
 	/**
 	 *
-	 * @param <IO> MotorIO subsysten is extending
-	 * @param subsystem subsystem to bind jog to
+	 * @param <IO>              MotorIO subsysten is extending
+	 * @param subsystem         subsystem to bind jog to
 	 * @param intervalBaseUnits intervals between each jog input
-	 * @param initialValue subsystem's start value of the jogging action
+	 * @param initialValue      subsystem's start value of the jogging action
 	 * @param maxValueBaseUnits max value to apply jogging action to
 	 * @param minValueBaseUnits min value to apploy jogging action to
-	 * @param setpointMode mode to apply jogging action to
-	 * @param startSetpoint subsystem's initial setpoint
-	 * @param continousDelay delay between each jog input when holding down the trigger
-	 * @param triggers binded triggers ([0]: jog up (REQUIRED FOR AN EFFECT TO HAPPEN), [1]: jog down, [2]: set to start)
+	 * @param setpointMode      mode to apply jogging action to
+	 * @param startSetpoint     subsystem's initial setpoint
+	 * @param continousDelay    delay between each jog input when holding down the
+	 *                          trigger
+	 * @param triggers          binded triggers ([0]: jog up (REQUIRED FOR AN EFFECT
+	 *                          TO HAPPEN), [1]: jog down, [2]: set to start)
 	 */
 	public static <IO extends MotorIO> void bindJog(
 			MotorSubsystem<IO> subsystem,
@@ -83,10 +85,10 @@ public class ControllerUtil {
 			subsystem.applySetpoint(next);
 		};
 
-		Function<Double, Command> commandGetter =
-				(interval) -> Commands.runOnce(() -> setpointOffseter.accept(interval))
-						.andThen(Commands.waitTime(continousDelay))
-						.repeatedly();
+		Function<Double, Command> commandGetter = (interval) -> Commands
+				.runOnce(() -> setpointOffseter.accept(interval))
+				.andThen(Commands.waitTime(continousDelay))
+				.repeatedly();
 
 		switch (triggers.length) {
 			case 3:
@@ -102,15 +104,18 @@ public class ControllerUtil {
 
 	/**
 	 *
-	 * @param <IO> MotorIO subsysten is extending
-	 * @param subsystem subsystem to bind jog to
-	 * @param intervalBaseUnits intervals between each jog input
-	 * @param initialValue subsystem's start value of the jogging action
+	 * @param <IO>                 MotorIO subsysten is extending
+	 * @param subsystem            subsystem to bind jog to
+	 * @param intervalBaseUnits    intervals between each jog input
+	 * @param initialValue         subsystem's start value of the jogging action
 	 * @param maxAbsoluteBaseUnits max absolute value to apply jogging action to
-	 * @param setpointMode mode to apply jogging action to
-	 * @param startSetpoint subsystem's initial setpoint
-	 * @param continousDelay delay between each jog input when holding down the trigger
-	 * @param triggers binded triggers ([0]: jog up (REQUIRED FOR AN EFFECT TO HAPPEN), [1]: jog down, [2]: set to start)
+	 * @param setpointMode         mode to apply jogging action to
+	 * @param startSetpoint        subsystem's initial setpoint
+	 * @param continousDelay       delay between each jog input when holding down
+	 *                             the trigger
+	 * @param triggers             binded triggers ([0]: jog up (REQUIRED FOR AN
+	 *                             EFFECT TO HAPPEN), [1]: jog down, [2]: set to
+	 *                             start)
 	 */
 	public static <IO extends MotorIO> void bindJog(
 			MotorSubsystem<IO> subsystem,

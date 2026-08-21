@@ -14,7 +14,8 @@ import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import frc.lib.util.Util;
 
 /**
- * Class for simulating a linear system powerd by one or more motors like an elevator.
+ * Class for simulating a linear system powerd by one or more motors like an
+ * elevator.
  */
 public class LinearSim extends MechanismSim {
 	private final Util.DistanceAngleConverter converter;

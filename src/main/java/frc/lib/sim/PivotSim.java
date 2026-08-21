@@ -12,10 +12,12 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
 /**
- * Class for simulating a pivoting system powerd by one or more motors like a rotating arm.
+ * Class for simulating a pivoting system powerd by one or more motors like a
+ * rotating arm.
  */
 public class PivotSim extends MechanismSim {
 	protected final SingleJointedArmSim sim;
+
 	/**
 	 * Creates a PivotSim from provided constants.
 	 *

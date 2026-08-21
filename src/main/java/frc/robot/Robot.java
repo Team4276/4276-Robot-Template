@@ -18,13 +18,9 @@ import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import choreo.auto.AutoFactory;
-import edu.wpi.first.hal.AllianceStationID;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -34,8 +30,6 @@ import frc.robot.controlboard.ControlBoard;
 import frc.robot.subsystems.drive.Drive;
 
 public class Robot extends LoggedRobot {
-    public static boolean isRedAlliance;
-
     private AutoFactory mAutoFactory;
     private Command mAutonomousCommand;
     private final AutoSelector mAutoSelector;
@@ -101,9 +95,6 @@ public class Robot extends LoggedRobot {
 
         RobotController.setBrownoutVoltage(Volts.of(5.5));
 
-        for (Sendable sendable : RobotConstants.LOGGED_SENDABLES) {
-            SmartDashboard.putData(sendable);
-        }
         SmartDashboard.putData("Auto Selector", mAutoSelector.getAutoChooser());
     }
 
@@ -128,25 +119,9 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void disabledPeriodic() {
-        updateAlliance();
-
         if (resetPoseForAuto) {
             Drive.mInstance.resetPose(mAutoSelector.getSelectedAutoStartingPose());
             resetPoseForAuto = false;
-        }
-    }
-
-    public void updateAlliance() {
-        if (Robot.isSimulation()) {
-            isRedAlliance = DriverStationSim.getAllianceStationId() == AllianceStationID.Red1
-                    || DriverStationSim.getAllianceStationId() == AllianceStationID.Red2
-                    || DriverStationSim.getAllianceStationId() == AllianceStationID.Red3;
-        } else {
-            DriverStation.getAlliance()
-                    .ifPresentOrElse(
-                            alliance -> isRedAlliance = alliance == DriverStation.Alliance.Red, () -> {
-                                Logger.recordOutput("Last unable to set alliance", Timer.getFPGATimestamp());
-                            });
         }
     }
 

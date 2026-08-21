@@ -6,7 +6,8 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 
 /**
- * Hood-specific pivot simulation that includes strong static and kinetic friction.
+ * Hood-specific pivot simulation that includes strong static and kinetic
+ * friction.
  */
 public class PivotSimHelper extends PivotSim {
 	private static final double MIN_SPEED_EPSILON_RAD_PER_SEC = 1e-3;
@@ -46,10 +47,10 @@ public class PivotSimHelper extends PivotSim {
 				: Math.signum(requestedVolts);
 		double normalizedVelocity = absVelocity / Math.max(stictionVelocityRadPerSec, MIN_SPEED_EPSILON_RAD_PER_SEC);
 		double staticToKineticBlend = Math.exp(-normalizedVelocity * normalizedVelocity);
-		double coulombFrictionVolts =
-				kineticFrictionVolts + (staticFrictionVolts - kineticFrictionVolts) * staticToKineticBlend;
-		double frictionVolts =
-				frictionDirection * coulombFrictionVolts + velocityRadPerSec * viscousFrictionVoltsPerRadPerSec;
+		double coulombFrictionVolts = kineticFrictionVolts
+				+ (staticFrictionVolts - kineticFrictionVolts) * staticToKineticBlend;
+		double frictionVolts = frictionDirection * coulombFrictionVolts
+				+ velocityRadPerSec * viscousFrictionVoltsPerRadPerSec;
 		double netVolts = requestedVolts - frictionVolts;
 
 		sim.setInputVoltage(MathUtil.clamp(netVolts, -12.0, 12.0));

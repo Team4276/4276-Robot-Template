@@ -8,7 +8,7 @@ public enum Ports {
     public final int id;
     public final CANBus bus;
 
-    private Ports(int id, CANBus bus){
+    private Ports(int id, CANBus bus) {
         this.id = id;
         this.bus = bus;
     }
