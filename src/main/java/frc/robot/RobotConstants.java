@@ -41,6 +41,8 @@ public class RobotConstants {
 	public static final CANBus canivore1 = new CANBus("canivore1");
 	public static final CANBus rio = new CANBus();
 
+    public static final boolean isTuning = true;
+
 	public static Sendable LOGGED_SENDABLES[] = new Sendable[] {
 		Drive.mInstance,
         ExampleSubsystem.mInstance,

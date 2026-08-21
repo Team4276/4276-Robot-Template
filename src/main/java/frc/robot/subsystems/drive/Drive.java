@@ -7,6 +7,8 @@ import static edu.wpi.first.units.Units.Volts;
 import java.io.File;
 import java.util.function.DoubleSupplier;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -28,41 +30,66 @@ import yams.motorcontrollers.SmartMotorControllerConfig.TelemetryVerbosity;
 public class Drive extends SubsystemBase {
     public static final Drive mInstance = new Drive();
 
-    public Pose2d getPose() {
-        return Pose2d.kZero;
-    }
-
-    public void resetPose(Pose2d pose) {
-    }
-
-    public void followChoreoTrajectory(SwerveSample sample) {
-    }
-
-    private SwerveDrive drive;
+    private SwerveDrive swerveDrive;
 
     private Drive() {
         SmartDashboard.putData(this);
         var cfg = new SwerveDriveConfig()
-                .withStartingPose(new Pose2d(3, 3, Rotation2d.kZero))
+                .withStartingPose(new Pose2d(3.0, 3.0, Rotation2d.kZero))
                 .withSubsystem(this)
                 .withTelemetry(TelemetryVerbosity.HIGH);
         try {
-            drive = new SwerveParser(new File(Filesystem.getDeployDirectory(), "swerve/base"))
+            swerveDrive = new SwerveParser(new File(Filesystem.getDeployDirectory(), "swerve/base"))
                     .createSwerveDrive(cfg);
         } catch (Exception e) {
             System.out.println("Error creating swerve drive");
             System.out.println(e);
             throw new RuntimeException(e);
         }
+
+        // TODO Vision
+        swerveDrive.addVisionMeasurement(getPose(), 0);
+
+        // TODO DTP & Yaw align (not using built in function) from yagsl
+    }
+
+    @Override
+    public void periodic() {
+        swerveDrive.updateTelemetry();
+
+        // TODO Add logging for all fields in high verbosity (replay not possible on hardware level ;-;)
+        // I mean it won't be possible when we have ctre either sooo
+    }
+
+    @Override
+    public void simulationPeriodic() {
+        swerveDrive.simIterate();
+    }
+    
+    @AutoLogOutput(key = "Drive/Pose")
+    public Pose2d getPose() {
+        return swerveDrive.getPose();
+    }
+
+    public void resetPose(Pose2d pose) {
+        swerveDrive.resetOdometry(pose);
+    }
+
+    public void zeroGyro(){
+        //TODO impl; not sure if shoudl use yagsl
     }
 
     public SwerveInputStream getAngularVelocityStream(DoubleSupplier x, DoubleSupplier y, DoubleSupplier rot) {
-        return new SwerveInputStream(drive, x, y, rot);
+        return new SwerveInputStream(swerveDrive, x, y, rot);
     }
 
     public Command drive(SwerveInputStream stream) {
-        return drive
-                .drive(() -> ChassisSpeeds.fromFieldRelativeSpeeds(stream.get(), new Rotation2d(drive.getGyroAngle())));
+        return swerveDrive
+                .drive(() -> ChassisSpeeds.fromFieldRelativeSpeeds(stream.get(), new Rotation2d(swerveDrive.getGyroAngle())));
+    }
+
+    public void followChoreoTrajectory(SwerveSample sample) {
+        // TODO choreo
     }
 
     /**
@@ -78,7 +105,7 @@ public class Drive extends SubsystemBase {
      */
     public Command sysIdModule(String moduleName) {
 
-        SwerveModule module = drive.getModule(moduleName).orElseThrow();
+        SwerveModule module = swerveDrive.getModule(moduleName).orElseThrow();
         SmartMotorController driveMotor = module.getDriveMotorController();
         SmartMotorController azimuthMotor = module.getAzimuthMotorController();
 
@@ -102,15 +129,5 @@ public class Drive extends SubsystemBase {
                 .andThen(Commands.waitSeconds(1))
                 .andThen(routine.dynamic(SysIdRoutine.Direction.kReverse))
                 .withName("SysId " + moduleName + " Azimuth");
-    }
-
-    @Override
-    public void periodic() {
-        drive.updateTelemetry();
-    }
-
-    @Override
-    public void simulationPeriodic() {
-        drive.simIterate();
     }
 }

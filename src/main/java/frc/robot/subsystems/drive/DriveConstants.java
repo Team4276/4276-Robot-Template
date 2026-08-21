@@ -1,5 +1,7 @@
 package frc.robot.subsystems.drive;
 
+import edu.wpi.first.math.util.Units;
+import frc.lib.util.LoggedTunablePID;
 import frc.robot.controlboard.ControlBoard;
 import yams.mechanisms.swerve.utility.SwerveInputStream;
 
@@ -15,4 +17,11 @@ public class DriveConstants {
 			() -> ControlBoard.mKeyboard0.getRawAxis(0),
 			() -> -ControlBoard.mKeyboard1.getRawAxis(0))
 			.withAllianceRelativeControl();
+	
+    public static final LoggedTunablePID kTeleopAutoAlignController = new LoggedTunablePID(
+            3.0, 0, 0.1, Units.inchesToMeters(1.0), "Drive/AutoAlign/TeleopTranslation");
+    public static final LoggedTunablePID kAutoAutoAlignController = new LoggedTunablePID(
+            3.0, 0, 0.1, Units.inchesToMeters(1.0), "Drive/AutoAlign/AutoTranslation");
+    public static final LoggedTunablePID kHeadingAlignController = new LoggedTunablePID(20.0, 0, 0, Math.toRadians(1.0),
+            "Drive/HeadingAlign");
 }

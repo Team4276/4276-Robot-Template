@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.lib.hid.ViXController;
 import frc.lib.io.MotorIO.Mode;
 import frc.lib.io.MotorIO.Setpoint;
 import frc.lib.util.ControllerUtil;
@@ -24,23 +25,22 @@ import frc.robot.subsystems.superstructure.Superstructure;
 public class ControlBoard extends SubsystemBase {
 	public static final ControlBoard mInstance = new ControlBoard();
 
-	public static final CommandXboxController mDriver = new CommandXboxController(
+	public static final ViXController mDriver = new ViXController(
 			ControlBoardConstants.kDriverControllerPort);
-	public static final CommandXboxController mOperator = new CommandXboxController(
+	public static final ViXController mOperator = new ViXController(
 			ControlBoardConstants.kOperatorControllerPort);
 	public static final CommandGenericHID mKeyboard0 = new CommandGenericHID(0);
 	public static final CommandGenericHID mKeyboard1 = new CommandGenericHID(1);
 
 	public void configureBindings() {
-		// Drive.mInstance.setDefaultCommand(Drive.mInstance.followSwerveRequestCommand(
-		// DriveConstants.teleopRequest, DriveConstants.teleopRequestUpdater));
-		// driver.back()
-		// .onTrue(Commands.runOnce(
-		// () -> Drive.mInstance.getGeneratedDrive().seedFieldCentric(),
-		// Drive.mInstance)
-		// .ignoringDisable(true));
 
 		Drive.mInstance.setDefaultCommand(Drive.mInstance.drive(DriveConstants.kTeleopAngularVelocityStream));
+
+		mDriver.back()
+				.onTrue(Commands.runOnce(
+						() -> Drive.mInstance.zeroGyro(),
+						Drive.mInstance)
+						.ignoringDisable(true));
 
 		mDriver.start()
 				.onTrue(Commands.runOnce(() -> Robot.resetPoseForAuto = true).ignoringDisable(true));
@@ -50,7 +50,7 @@ public class ControlBoard extends SubsystemBase {
 		// jogControls();
 		// tuningControls();
 
-		if(Robot.isSimulation()){
+		if (Robot.isSimulation()) {
 			DriverStation.silenceJoystickConnectionWarning(true);
 		}
 	}
