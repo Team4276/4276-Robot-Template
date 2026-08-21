@@ -17,6 +17,7 @@ import frc.lib.io.MotorIO.Mode;
 import frc.lib.io.MotorIO.Setpoint;
 import frc.lib.util.ControllerUtil;
 import frc.robot.Robot;
+import frc.robot.RobotConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.examplesubsystem.ExampleSubsystem;
@@ -34,7 +35,7 @@ public class ControlBoard extends SubsystemBase {
 
 	public void configureBindings() {
 
-		Drive.mInstance.setDefaultCommand(Drive.mInstance.drive(DriveConstants.kTeleopAngularVelocityStream));
+		Drive.mInstance.setDefaultCommand(Drive.mInstance.drive(DriveConstants.kTeleopAngularVelocityStream.get()));
 
 		mDriver.back()
 				.onTrue(Commands.runOnce(
@@ -50,7 +51,7 @@ public class ControlBoard extends SubsystemBase {
 		// jogControls();
 		// tuningControls();
 
-		if (Robot.isSimulation()) {
+		if (RobotConstants.getMode() == RobotConstants.Mode.SIM) {
 			DriverStation.silenceJoystickConnectionWarning(true);
 		}
 	}

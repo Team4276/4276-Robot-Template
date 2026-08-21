@@ -4,6 +4,14 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Time;
 
 public class ControlBoardConstants {
+	public static enum InputMode {
+		CONTROLLER,
+		KEYBOARD,
+		DEMO
+	}
+
+	public static final InputMode kInputMode = InputMode.KEYBOARD;
+
 	public static final int kDriverControllerPort = 0;
 	public static final int kOperatorControllerPort = 1;
 

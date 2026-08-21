@@ -8,8 +8,10 @@ import java.io.File;
 import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import choreo.trajectory.SwerveSample;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -19,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.lib.util.AllianceFlipUtil;
 import swervelib.parser.SwerveParser;
 import yams.mechanisms.config.SwerveDriveConfig;
 import yams.mechanisms.swerve.SwerveDrive;
@@ -49,15 +52,14 @@ public class Drive extends SubsystemBase {
 
         // TODO Vision
         swerveDrive.addVisionMeasurement(getPose(), 0);
-
-        // TODO DTP & Yaw align (not using built in function) from yagsl
     }
 
     @Override
     public void periodic() {
         swerveDrive.updateTelemetry();
 
-        // TODO Add logging for all fields in high verbosity (replay not possible on hardware level ;-;)
+        // TODO Add logging for all fields in high verbosity (replay not possible on
+        // hardware level ;-;)
         // I mean it won't be possible when we have ctre either sooo
     }
 
@@ -65,7 +67,10 @@ public class Drive extends SubsystemBase {
     public void simulationPeriodic() {
         swerveDrive.simIterate();
     }
-    
+
+    // TODO this doesn't work btw... need to do this through an io getter which
+    // means i have to implement a drive io which means moving all of this code
+    // elsewhere...
     @AutoLogOutput(key = "Drive/Pose")
     public Pose2d getPose() {
         return swerveDrive.getPose();
@@ -75,21 +80,45 @@ public class Drive extends SubsystemBase {
         swerveDrive.resetOdometry(pose);
     }
 
-    public void zeroGyro(){
-        //TODO impl; not sure if shoudl use yagsl
+    public void zeroGyro() {
+        resetPose(
+                new Pose2d(
+                        getPose().getTranslation(),
+                        AllianceFlipUtil.apply(Rotation2d.kZero)));
+
     }
 
     public SwerveInputStream getAngularVelocityStream(DoubleSupplier x, DoubleSupplier y, DoubleSupplier rot) {
         return new SwerveInputStream(swerveDrive, x, y, rot);
     }
 
-    public Command drive(SwerveInputStream stream) {
+    public Command drive(ChassisSpeeds speeds) {
         return swerveDrive
-                .drive(() -> ChassisSpeeds.fromFieldRelativeSpeeds(stream.get(), new Rotation2d(swerveDrive.getGyroAngle())));
+                .drive(() -> ChassisSpeeds.fromFieldRelativeSpeeds(speeds,
+                        new Rotation2d(swerveDrive.getGyroAngle())));
     }
 
     public void followChoreoTrajectory(SwerveSample sample) {
-        // TODO choreo
+        ChassisSpeeds requestedSpeeds = sample.getChassisSpeeds();
+
+        requestedSpeeds.vxMetersPerSecond += DriveConstants.kTrajectoryXController.calculate(
+                0.0, sample.x - getPose().getTranslation().getX());
+        requestedSpeeds.vyMetersPerSecond += DriveConstants.kTrajectoryYController.calculate(
+                0.0, sample.y - getPose().getTranslation().getY());
+        requestedSpeeds.omegaRadiansPerSecond += DriveConstants.kTrajectoryThetaController.calculate(
+                0.0,
+                MathUtil.angleModulus(
+                        sample.getPose()
+                                .getRotation()
+                                .minus(getPose().getRotation())
+                                .getRadians()));
+
+        Logger.recordOutput("Drive/Trajectory/SetpointPose", sample.getPose());
+        Logger.recordOutput(
+                "Drive/Trajectory/SetpointSpeeds", sample.getChassisSpeeds());
+
+        swerveDrive.drive(() -> ChassisSpeeds.fromFieldRelativeSpeeds(requestedSpeeds,
+                new Rotation2d(swerveDrive.getGyroAngle())));
     }
 
     /**
