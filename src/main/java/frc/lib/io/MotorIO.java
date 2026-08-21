@@ -45,15 +45,17 @@ public abstract class MotorIO {
 		public double[] motorTemperature = { 0.0 };
 		public double[] acceleration = { 0.0 };
 
-		// public AngularVelocity[] velocity = { BaseUnits.AngleUnit.of(0.0).per(Units.Second) };
+		// public AngularVelocity[] velocity = {
+		// BaseUnits.AngleUnit.of(0.0).per(Units.Second) };
 		// public Angle[] position = { BaseUnits.AngleUnit.of(0.0) };
 		// public Current[] statorCurrent = { BaseUnits.CurrentUnit.of(0.0) };
 		// public Current[] supplyCurrent = { BaseUnits.CurrentUnit.of(0.0) };
 		// public Voltage[] motorVoltage = { BaseUnits.VoltageUnit.of(0.0) };
 		// public Voltage pidVoltage = BaseUnits.VoltageUnit.of(0.0);
-		// public Temperature[] motorTemperature = { BaseUnits.TemperatureUnit.of(0.0) };
+		// public Temperature[] motorTemperature = { BaseUnits.TemperatureUnit.of(0.0)
+		// };
 		// public AngularAcceleration[] acceleration = {
-		// 		BaseUnits.AngleUnit.of(0.0).per(Units.Seconds).per(Units.Seconds) };
+		// BaseUnits.AngleUnit.of(0.0).per(Units.Seconds).per(Units.Seconds) };
 
 		public boolean configFailed = false;
 	}
@@ -68,26 +70,33 @@ public abstract class MotorIO {
 	 *
 	 * @param mechanismPosition the mechanism's position to set location as.
 	 */
-	public abstract void setCurrentPosition(Angle mechanismPosition);
+	public void setCurrentPosition(Angle mechanismPosition) {
+	}
 
 	/**
 	 * Set's the mechanism's current location as zero.
 	 */
-	public abstract void zeroSensors();
+	public void zeroSensors() {
+	}
 
 	/**
 	 * Sets the motor to brake or coast.
 	 *
 	 * @param wantsBrake Whether to brake or coast. True is brake, false is coast.
 	 */
-	public abstract void setNeutralBrake(boolean wantsBrake);
+	public void setNeutralBrake(boolean wantsBrake) {
+	}
 
-	public abstract TalonFXConfiguration getMotorIOConfig();
+	public TalonFXConfiguration getMotorIOConfig() {
+		return new TalonFXConfiguration();
+	}
 
 	/**
 	 * Gets whether or not the config is applied successfully to the motor
 	 */
-	public abstract boolean getConfigFailed();
+	public boolean getConfigFailed() {
+		return false;
+	}
 
 	/**
 	 * Sets whether to enable or disable soft limits.
@@ -95,19 +104,22 @@ public abstract class MotorIO {
 	 * @param enable Whether to enable or disable soft limits. True is enable, false
 	 *               is disable.
 	 */
-	public abstract void useSoftLimits(boolean enable);
+	public void useSoftLimits(boolean enable) {
+	}
 
 	/**
 	 * Sets the motor to be idle. Should not be called directly, only applied
 	 * through Setpoints.
 	 */
-	protected abstract void setNeutralSetpoint();
+	protected void setNeutralSetpoint() {
+	}
 
 	/**
 	 * Sets the motor to be coasting. Should not be called directly, only applied
 	 * through Setpoints.
 	 */
-	protected abstract void setCoastSetpoint();
+	protected void setCoastSetpoint() {
+	}
 
 	/**
 	 * Sets the motor to run at at given voltage. Should not be called directly,
@@ -115,7 +127,8 @@ public abstract class MotorIO {
 	 *
 	 * @param voltage Voltage to run at.
 	 */
-	protected abstract void setVoltageSetpoint(Voltage voltage);
+	protected void setVoltageSetpoint(Voltage voltage) {
+	}
 
 	/**
 	 * Sets the motor to use motion magic control to go to a given position. Should
@@ -124,7 +137,8 @@ public abstract class MotorIO {
 	 * @param mechanismPosition Mechanism position to go to.
 	 * @param slot              The PID slot to assign
 	 */
-	protected abstract void setMotionMagicSetpoint(Angle mechanismPosition, int slot);
+	protected void setMotionMagicSetpoint(Angle mechanismPosition, int slot) {
+	}
 
 	/**
 	 * Sets the motor to use motion magic control to go to a given position. Should
@@ -132,7 +146,8 @@ public abstract class MotorIO {
 	 *
 	 * @param mechanismPosition Mechanism position to go to.
 	 */
-	protected abstract void setMotionMagicSetpoint(Angle mechanismPosition);
+	protected void setMotionMagicSetpoint(Angle mechanismPosition) {
+	}
 
 	/**
 	 * Sets the motor to go to a given velocity. Should not be called directly, only
@@ -141,7 +156,8 @@ public abstract class MotorIO {
 	 * @param mechanismVelocity Mechanism velocity to go to.
 	 * @param slot              The PID slot to assign
 	 */
-	protected abstract void setVelocitySetpoint(AngularVelocity mechanismVelocity, int slot);
+	protected void setVelocitySetpoint(AngularVelocity mechanismVelocity, int slot) {
+	}
 
 	/**
 	 * Sets the motor to go to a given velocity. Should not be called directly, only
@@ -149,7 +165,8 @@ public abstract class MotorIO {
 	 *
 	 * @param mechanismVelocity Mechanism velocity to go to.
 	 */
-	protected abstract void setVelocitySetpoint(AngularVelocity mechanismVelocity);
+	protected void setVelocitySetpoint(AngularVelocity mechanismVelocity) {
+	}
 
 	/**
 	 * Sets the motor to run at a percentage of it's max voltage. Should not be
@@ -157,7 +174,8 @@ public abstract class MotorIO {
 	 *
 	 * @param percent Percentage of max voltage to run at.
 	 */
-	protected abstract void setDutyCycleSetpoint(Dimensionless percent);
+	protected void setDutyCycleSetpoint(Dimensionless percent) {
+	}
 
 	/**
 	 * Sets the motor to use PID control to go to a given position. Should not be
@@ -166,7 +184,8 @@ public abstract class MotorIO {
 	 * @param mechanismPosition Mechanism position to go to.
 	 * @param slot              The PID slot to assign
 	 */
-	protected abstract void setPositionSetpoint(Angle mechanismPosition, int slot);
+	protected void setPositionSetpoint(Angle mechanismPosition, int slot) {
+	}
 
 	/**
 	 * Sets the motor to use PID control to go to a given position. Should not be
@@ -174,13 +193,17 @@ public abstract class MotorIO {
 	 *
 	 * @param mechanismPosition Mechanism position to go to.
 	 */
-	protected abstract void setPositionSetpoint(Angle mechanismPosition);
+	protected void setPositionSetpoint(Angle mechanismPosition) {
+	}
 
-	public abstract void setMainConfig(TalonFXConfiguration configuration);
+	public void setMainConfig(TalonFXConfiguration configuration) {
+	}
 
-	public abstract void changeMainConfig(UnaryOperator<TalonFXConfiguration> configChanger);
+	public void changeMainConfig(UnaryOperator<TalonFXConfiguration> configChanger) {
+	}
 
-	public abstract void changeFollowerConfig(UnaryOperator<TalonFXConfiguration> configChanger);
+	public void changeFollowerConfig(UnaryOperator<TalonFXConfiguration> configChanger) {
+	}
 
 	/**
 	 * Applies a Setpoint to the MotorIO.
@@ -194,7 +217,8 @@ public abstract class MotorIO {
 		}
 	}
 
-	public abstract void disabledPeriodic();
+	public void disabledPeriodic() {
+	}
 
 	/**
 	 * Enables this MotorIO. Immediatly applies the last set Setpoint including

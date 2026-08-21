@@ -6,6 +6,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Voltage;
+import frc.lib.io.MotorIO;
 import frc.lib.io.MotorIOTalonFX;
 import frc.lib.io.MotorIOTalonFXSim;
 import frc.lib.sim.RollerSim;
@@ -13,13 +14,14 @@ import frc.lib.sim.RollerSim.RollerSimConstants;
 import frc.lib.io.MotorIOTalonFX.MotorIOTalonFXConfig;
 import frc.robot.Ports;
 import frc.robot.Robot;
+import frc.robot.RobotConstants;
 
 public class ExampleSubsystemConstants {
 	public static final Voltage kExampleVoltage = Units.Volts.of(5.0);
 	public static final Voltage kIdleVoltage = Units.Volts.of(0.0);
 
-    public static final double kGearing = 1.0;
-    
+	public static final double kGearing = 1.0;
+
 	public static TalonFXConfiguration getFXConfig() {
 		TalonFXConfiguration config = new TalonFXConfiguration();
 
@@ -50,12 +52,16 @@ public class ExampleSubsystemConstants {
 		return config;
 	}
 
-	public static MotorIOTalonFX getMotorIO() {
-		if (Robot.isReal()) {
-			return new MotorIOTalonFX(getIOConfig());
-		} else {
-			return new MotorIOTalonFXSim(getIOConfig(), new RollerSim(getSimConstants()));
-		}
+	public static MotorIO getMotorIO() {
+		return switch (RobotConstants.mode) {
+			case REAL -> new MotorIOTalonFX(getIOConfig());
+			case SIM -> new MotorIOTalonFXSim(getIOConfig(), new RollerSim(getSimConstants()));
+			case REPLAY -> new MotorIO(Units.Rotations, Units.Minutes) {
+				@Override
+				public void updateInputs() {
+				};
+			};
+		};
 	}
 
 	public static RollerSimConstants getSimConstants() {
