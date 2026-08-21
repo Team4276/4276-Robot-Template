@@ -35,7 +35,7 @@ public class ControlBoard extends SubsystemBase {
 
 	public void configureBindings() {
 
-		Drive.mInstance.setDefaultCommand(Drive.mInstance.drive(DriveConstants.kTeleopAngularVelocityStream.get()));
+		Drive.mInstance.setDefaultCommand(Drive.mInstance.drive(DriveConstants.kTeleopAngularVelocityStream));
 
 		mDriver.back()
 				.onTrue(Commands.runOnce(

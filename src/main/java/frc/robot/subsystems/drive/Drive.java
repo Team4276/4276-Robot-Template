@@ -6,6 +6,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import java.io.File;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -93,8 +94,12 @@ public class Drive extends SubsystemBase {
     }
 
     public Command drive(ChassisSpeeds speeds) {
+        return drive(() -> speeds);
+    }
+
+    public Command drive(Supplier<ChassisSpeeds> speeds) {
         return mSwerveDrive
-                .drive(() -> ChassisSpeeds.fromFieldRelativeSpeeds(speeds,
+                .drive(() -> ChassisSpeeds.fromFieldRelativeSpeeds(speeds.get(),
                         new Rotation2d(mSwerveDrive.getGyroAngle())));
     }
 
