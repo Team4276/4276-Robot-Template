@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -28,6 +29,7 @@ public class ControlBoard extends SubsystemBase {
 	public static final CommandXboxController mOperator = new CommandXboxController(
 			ControlBoardConstants.kOperatorControllerPort);
 	public static final CommandGenericHID mKeyboard0 = new CommandGenericHID(0);
+	public static final CommandGenericHID mKeyboard1 = new CommandGenericHID(1);
 
 	public void configureBindings() {
 		// Drive.mInstance.setDefaultCommand(Drive.mInstance.followSwerveRequestCommand(
@@ -47,6 +49,10 @@ public class ControlBoard extends SubsystemBase {
 		// bringupControls();
 		// jogControls();
 		// tuningControls();
+
+		if(Robot.isSimulation()){
+			DriverStation.silenceJoystickConnectionWarning(true);
+		}
 	}
 
 	public void driverControls() {
