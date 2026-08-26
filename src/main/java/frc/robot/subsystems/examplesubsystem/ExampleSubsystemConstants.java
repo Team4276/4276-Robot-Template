@@ -60,7 +60,7 @@ public class ExampleSubsystemConstants {
 				@Override
 				public void updateInputs() {
 				};
-			};
+			}; // TODO test log replay
 		};
 	}
 

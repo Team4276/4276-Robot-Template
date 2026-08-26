@@ -59,6 +59,8 @@ public class Drive extends SubsystemBase {
     public void periodic() {
         mSwerveDrive.updateTelemetry();
 
+        Logger.recordOutput(getName(), mSwerveDrive.getPose());
+
         // TODO Add logging for all fields in high verbosity (replay not possible on
         // hardware level ;-;)
         // I mean it won't be possible when we have ctre either sooo
