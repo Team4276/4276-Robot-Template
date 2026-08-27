@@ -12,6 +12,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
+import frc.lib.util.vision.VisionEstimate;
 
 public interface DriveIO {
     @AutoLog
@@ -29,31 +30,34 @@ public interface DriveIO {
 
     public default void updateInputs(DriveIOInputs inputs) {
     }
-    
-    public default void updateSim(){
+
+    public default void updateSim() {
     }
 
-    public default void resetPose(Pose2d pose){
+    public default void resetPose(Pose2d pose) {
     }
-    
-    public default void drive(ChassisSpeeds speeds){
+
+    public default void drive(ChassisSpeeds speeds) {
+    }
+
+    public default void addVisionMeasurement(VisionEstimate estimate) {
     }
 
     public static record ModuleInput(
-        boolean driveConnected,
-        Angle driveRotorPosition,
-        AngularVelocity driveRotorVelocity,
-        Voltage driveVoltage,
-        Current driveSupplyCurrent,
-        Current driveStatorCurrent,
-        Temperature driveTemp,
+            boolean driveConnected,
+            Angle driveRotorPosition,
+            AngularVelocity driveRotorVelocity,
+            Voltage driveVoltage,
+            Current driveSupplyCurrent,
+            Current driveStatorCurrent,
+            Temperature driveTemp,
 
-        boolean turnConnected,
-        Angle turnEncoderPosition,
-        AngularVelocity turnEncoderVelocity,
-        Voltage turnVoltage,
-        Current turnSupplyCurrent,
-        Current turnStatorCurrent,
-        Temperature turnTemp
-    ) {}
+            boolean turnConnected,
+            Angle turnEncoderPosition,
+            AngularVelocity turnEncoderVelocity,
+            Voltage turnVoltage,
+            Current turnSupplyCurrent,
+            Current turnStatorCurrent,
+            Temperature turnTemp) {
+    }
 }

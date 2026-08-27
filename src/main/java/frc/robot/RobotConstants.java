@@ -37,4 +37,6 @@ public class RobotConstants {
     public static final CANBus rio = new CANBus();
 
     public static final boolean isTuning = true;
+
+    public static final boolean simulateVision = false;
 }

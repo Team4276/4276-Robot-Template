@@ -2,6 +2,7 @@ package frc.robot.game;
 
 import static edu.wpi.first.units.Units.Meters;
 
+import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.units.measure.Distance;
@@ -19,5 +20,18 @@ public class FieldLayout {
 
     public static class LinesHorizontal {
         public static final Distance kCenter = kFieldWidth.div(2.0);
+    }
+
+    public static AprilTag[] getAprilTagArrayFromIDs(int ids[]) {
+        AprilTag buffer[] = new AprilTag[ids.length];
+        int offset = 0;
+        for (AprilTag tag : kApriltagLayout.getTags()) {
+            for (int id : ids)
+                if (id == tag.ID) {
+                    buffer[offset++] = tag;
+                    break;
+                }
+        }
+        return buffer;
     }
 }

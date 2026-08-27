@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.AllianceFlipUtil;
+import frc.lib.util.vision.VisionEstimate;
 
 public class Drive extends SubsystemBase {
     public static final Drive mInstance = new Drive();
@@ -78,5 +79,9 @@ public class Drive extends SubsystemBase {
                 "Drive/Trajectory/SetpointSpeeds", sample.getChassisSpeeds());
 
         io.drive(requestedSpeeds);
+    }
+
+    public void addVisionMeasurement(VisionEstimate estimate) {
+        io.addVisionMeasurement(estimate);
     }
 }
