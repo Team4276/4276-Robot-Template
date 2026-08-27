@@ -35,7 +35,7 @@ public class ControlBoard extends SubsystemBase {
 
 	public void configureBindings() {
 
-		Drive.mInstance.setDefaultCommand(Drive.mInstance.drive(DriveConstants.kTeleopAngularVelocityStream));
+		Drive.mInstance.setDefaultCommand(Drive.mInstance.drive(DriveConstants.kTeleopRequestUpdater));
 
 		mDriver.back()
 				.onTrue(Commands.runOnce(
@@ -83,18 +83,6 @@ public class ControlBoard extends SubsystemBase {
 	}
 
 	public void tuningControls() {
-		mDriver
-				.y()
-				.whileTrue(Drive.mInstance.sysIdModule("frontleft"));
-		mDriver
-				.b()
-				.whileTrue(Drive.mInstance.sysIdModule("frontright"));
-		mDriver
-				.a()
-				.whileTrue(Drive.mInstance.sysIdModule("backright"));
-		mDriver
-				.x()
-				.whileTrue(Drive.mInstance.sysIdModule("backleft"));
 	}
 
 	public Command rumbleCommand(Time duration) {
