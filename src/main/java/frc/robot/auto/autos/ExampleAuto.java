@@ -13,7 +13,6 @@ public class ExampleAuto extends AutoModeBase {
 
 	public ExampleAuto(AutoFactory factory) {
 		super(factory, "Example Auto");
-		logTrajectories(startToFirstPOI, firstPOIToSecondPOI);
 
 		prepRoutine(
 				startToFirstPOI.cmd(),
