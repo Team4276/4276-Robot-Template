@@ -3,6 +3,9 @@ package frc.robot.controlboard;
 import static edu.wpi.first.units.Units.Milliseconds;
 import static edu.wpi.first.units.Units.Volts;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -18,6 +21,8 @@ import frc.lib.io.MotorIO.Setpoint;
 import frc.lib.util.ControllerUtil;
 import frc.robot.Robot;
 import frc.robot.RobotConstants;
+import frc.robot.commands.AimAtCommand;
+import frc.robot.game.FieldLayout;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.examplesubsystem.ExampleSubsystem;
@@ -62,6 +67,14 @@ public class ControlBoard extends SubsystemBase {
 		mKeyboard0.button(2)
 				.onTrue(Superstructure.mInstance.testCommand().onlyWhile(mKeyboard0.button(2)));
 
+		mKeyboard0.button(3)
+				.whileTrue(new AimAtCommand(() -> {
+					Translation2d poi = FieldLayout.kPOI;
+					Pose2d pose = Drive.mInstance.getPose();
+					return new Rotation2d(
+							poi.getX() - pose.getX(),
+							poi.getY() - pose.getY());
+				}));
 	}
 
 	public void bringupControls() {

@@ -59,6 +59,10 @@ public class Drive extends SubsystemBase {
         return Commands.run(() -> io.drive(speeds.get()), this);
     }
 
+    public void driveFieldRelative(ChassisSpeeds speeds) {
+        io.drive(speeds);
+    }
+
     public void followChoreoTrajectory(SwerveSample sample) {
         ChassisSpeeds requestedSpeeds = sample.getChassisSpeeds();
 
