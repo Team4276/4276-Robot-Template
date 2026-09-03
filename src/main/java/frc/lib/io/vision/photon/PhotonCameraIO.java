@@ -66,6 +66,7 @@ public class PhotonCameraIO extends CameraIO {
             inputs.targetAreas = areas;
             inputs.targetPitch = pitch;
             inputs.targetYaw = yaw;
+            // TODO use replay inputs correctly (currently returns zeroed cam to tag)
 
             if (result.getTimestampSeconds() > m_lastResult.getTimestampSeconds()) {
                 m_lastResult = result;
