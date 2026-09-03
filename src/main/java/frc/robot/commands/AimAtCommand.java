@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.util.AllianceFlipUtil;
+import org.littletonrobotics.junction.Logger;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 
@@ -37,6 +38,10 @@ public class AimAtCommand extends Command {
                         .getRadians());
 
         double omega = DriveConstants.kHeadingAlignController.calculate(0.0, error);
+
+        Logger.recordOutput("AimAtCommand/TargetYaw", targetYaw.get().getRadians());
+        Logger.recordOutput("AimAtCommand/Error", error);
+        Logger.recordOutput("AimAtCommand/Omega", omega);
 
         Drive.mInstance.driveFieldRelative(
                 new ChassisSpeeds(translation.vxMetersPerSecond, translation.vyMetersPerSecond, omega));
