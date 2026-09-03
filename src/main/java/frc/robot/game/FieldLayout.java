@@ -34,4 +34,11 @@ public class FieldLayout {
         }
         return buffer;
     }
+
+    public static Integer[] getIDArrayFromAprilTagArray(AprilTag tags[]) {
+        Integer buffer[] = new Integer[tags.length];
+        for (int i = 0; i < tags.length; i++)
+            buffer[i] = tags[i].ID;
+        return buffer;
+    }
 }

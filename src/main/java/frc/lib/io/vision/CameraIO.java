@@ -1,5 +1,6 @@
 package frc.lib.io.vision;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.numbers.N3;
 import frc.lib.bases.CameraSubsystem.CameraIOConfig;
@@ -10,15 +11,30 @@ import java.util.List;
 import java.util.Optional;
 
 import org.littletonrobotics.junction.AutoLog;
+import org.littletonrobotics.junction.Logger;
 
 public abstract class CameraIO {
 
 	protected final CameraIOConfig config;
+	protected final VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
 	protected CameraPipeline pipeline = CameraPipeline.getDefault();
 
 	@AutoLog
 	public static class VisionIOInputs {
+		public boolean connected = false;
+		public int pipelineIndex = 0;
+		public double latestTimestamp = 0.0;
 
+		public int targetCount = 0;
+		public int[] targetIds = new int[0];
+		public double[] targetAreas = new double[0];
+		public double[] targetPitch = new double[0];
+		public double[] targetYaw = new double[0];
+
+		public boolean hasEstimate = false;
+		public Pose2d estimatePose = new Pose2d();
+		public double estimateTimestamp = 0.0;
+		public int[] estimateTagIds = new int[0];
 	}
 
 	protected CameraIO(CameraIOConfig config) {
@@ -54,12 +70,6 @@ public abstract class CameraIO {
 	}
 
 	public void update() {
-		// builder.addStringProperty(config.name + "/Pipeline/Name", () ->
-		// pipeline.name(), null);
-		// builder.addStringProperty(
-		// config.name + "/Pipeline/Type", () -> pipeline.type().name(), null);
-		// builder.addIntegerProperty(config.name + "/Pipeline/index", () ->
-		// pipeline.index(), null);
-		// builder.addStringProperty(config.name + "/Name", () -> config.name, null);
+		Logger.processInputs(config.name, inputs);
 	}
 }
