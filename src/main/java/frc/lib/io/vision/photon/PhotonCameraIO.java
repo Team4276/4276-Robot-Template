@@ -40,7 +40,7 @@ public class PhotonCameraIO extends CameraIO {
     }
 
     @Override
-    public void update() {
+    public void updateInputs() {
         inputs.connected = wrappedCamera.isConnected();
         inputs.pipelineIndex = wrappedCamera.getPipelineIndex();
 

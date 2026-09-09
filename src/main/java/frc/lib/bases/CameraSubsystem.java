@@ -115,7 +115,8 @@ public abstract class CameraSubsystem extends SubsystemBase {
     public void periodic() {
         if (enabled) {
             for (CameraIO camera : config.cameras) {
-                camera.update();
+                camera.updateInputs();
+                Logger.processInputs(camera.getName(), camera.inputs);
             }
             outputTelemetry();
             updateDetection();

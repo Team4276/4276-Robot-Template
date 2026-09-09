@@ -11,12 +11,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.littletonrobotics.junction.AutoLog;
-import org.littletonrobotics.junction.Logger;
 
 public abstract class CameraIO {
 
 	protected final CameraIOConfig config;
-	protected final VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
+	public final VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
 	protected CameraPipeline pipeline = CameraPipeline.getDefault();
 
 	@AutoLog
@@ -37,11 +36,14 @@ public abstract class CameraIO {
 		public int[] estimateTagIds = new int[0];
 	}
 
+	public abstract void updateInputs();
+
 	protected CameraIO(CameraIOConfig config) {
 		this.config = config;
 	}
 
-	public abstract void updatePipeline(CameraPipeline pipeline);
+	public void updatePipeline(CameraPipeline pipeline) {
+	};
 
 	public Optional<List<VisionGamePiece>> getAllGamePieces() {
 		return Optional.empty();
@@ -64,12 +66,12 @@ public abstract class CameraIO {
 		config.aprilTagVisionStdDevs = standardDeviations;
 	}
 
+	public String getName() {
+		return config.name;
+	}
+
 	public void setPipeline(CameraPipeline pipeline) {
 		this.pipeline = pipeline;
 		updatePipeline(pipeline);
-	}
-
-	public void update() {
-		Logger.processInputs(config.name, inputs);
 	}
 }

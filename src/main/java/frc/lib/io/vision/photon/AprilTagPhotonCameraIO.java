@@ -87,8 +87,8 @@ public class AprilTagPhotonCameraIO extends PhotonCameraIO {
 	}
 
 	@Override
-	public void update() {
-		super.update();
+	public void updateInputs() {
+		super.updateInputs();
 
 		ArrayList<VisionEstimate> buffer = new ArrayList<>();
 		if (!getLastInputBuffer().isEmpty()) {

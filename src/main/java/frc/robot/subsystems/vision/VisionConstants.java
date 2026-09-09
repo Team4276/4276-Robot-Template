@@ -10,7 +10,7 @@ import edu.wpi.first.math.numbers.N3;
 import frc.lib.bases.CameraSubsystem.CameraIOConfig;
 import frc.lib.bases.CameraSubsystem.CameraConfig;
 import frc.lib.io.vision.CameraIO;
-import frc.lib.io.vision.photon.PhotonCameraIO;
+import frc.lib.io.vision.photon.AprilTagPhotonCameraIO;
 import frc.lib.io.vision.sim.EmptySimulatedCameraIO;
 import frc.robot.RobotConstants;
 import frc.robot.game.FieldLayout;
@@ -41,16 +41,12 @@ public class VisionConstants {
 
         public static final CameraIO getIO() {
             return switch (RobotConstants.mode) {
-                case REAL -> new PhotonCameraIO(getConfig());
-                // case SIM -> RobotConstants.simulateVision ? new
-                // AprilTagSimulatedPhotonCameraIO(
-                // getVisionSystemSim(),
-                // getConfig(),
-                // getSimConfig(),
-                // APRIL_TAG_STRATEGY)
-                // : new EmptySimulatedCameraIO(getConfig());
-                case REPLAY -> new EmptySimulatedCameraIO(getConfig());
-                default -> new EmptySimulatedCameraIO(getConfig());
+                case REAL -> new AprilTagPhotonCameraIO(getConfig(), APRIL_TAG_STRATEGY, LAYOUT);
+                case SIM -> new EmptySimulatedCameraIO(getConfig());
+                case REPLAY -> new CameraIO(getConfig()) {
+                    public void updateInputs() {
+                    };
+                };
             };
         }
 
@@ -71,7 +67,8 @@ public class VisionConstants {
 
     public static CameraConfig getConfig() {
         CameraConfig config = new CameraConfig();
-
+        config.name = "Vision";
+        config.cameras = new CameraIO[] { BackConstants.getIO() };
         return config;
     }
 
