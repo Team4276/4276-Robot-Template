@@ -3,6 +3,7 @@ package frc.lib.io.vision.photon;
 import static edu.wpi.first.units.Units.Seconds;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.Timer;
 import frc.lib.util.vision.VisionEstimate;
@@ -106,14 +107,21 @@ public class VisionIOAprilTagPhoton extends VisionIOPhotonCamera {
 						est.getTimestamp().in(Seconds));
 			}
 			if (!estimates.isEmpty()) {
-				VisionEstimate first = estimates.get(0);
 				inputs.hasEstimate = true;
-				inputs.estimatePose = first.getPose();
-				inputs.estimateTimestamp = first.getTimestamp().in(Seconds);
-				Integer[] tagIds = FieldLayout.getIDArrayFromAprilTagArray(first.getTags());
-				inputs.estimateTagIds = new int[tagIds.length];
-				for (int j = 0; j < tagIds.length; j++) {
-					inputs.estimateTagIds[j] = tagIds[j];
+				int size = estimates.size();
+				inputs.estimatePose = new Pose2d[size];
+				inputs.estimateTimestamp = new double[size];
+				inputs.estimateTagIds = new int[size][0];
+
+				for (int j = 0; j < size; j++) {
+					var estimate = estimates.get(j);
+					inputs.estimatePose[j] = estimate.getPose();
+					inputs.estimateTimestamp[j] = estimate.getTimestamp().in(Seconds);
+					Integer[] tagIds = FieldLayout.getIDArrayFromAprilTagArray(estimate.getTags());
+					inputs.estimateTagIds[j] = new int[tagIds.length];
+					for (int k = 0; k < tagIds.length; k++) {
+						inputs.estimateTagIds[j][k] = tagIds[k];
+					}
 				}
 			}
 		});

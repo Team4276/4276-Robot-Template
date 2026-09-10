@@ -32,9 +32,9 @@ public abstract class VisionIO {
 		public double[] targetYaw = new double[0];
 
 		public boolean hasEstimate = false;
-		public Pose2d estimatePose = new Pose2d();
-		public double estimateTimestamp = 0.0;
-		public int[] estimateTagIds = new int[0];
+		public Pose2d[] estimatePose = new Pose2d[0];
+		public double[] estimateTimestamp = new double[0];
+		public int[][] estimateTagIds = new int[0][0];
 	}
 
 	public static class CameraIOConfig {

@@ -3,7 +3,6 @@ package frc.lib.bases;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Seconds;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -22,7 +21,6 @@ import frc.lib.io.vision.VisionIO;
 import frc.lib.util.LoggedTracer;
 import frc.lib.util.vision.CameraPipeline;
 import frc.lib.util.vision.VisionEstimate;
-import frc.lib.util.vision.VisionGamePiece;
 import frc.robot.game.FieldLayout;
 import frc.robot.subsystems.drive.Drive;
 
@@ -38,7 +36,6 @@ public abstract class VisionSubsystem extends SubsystemBase {
     private Time lastUpdatePoseTime = Seconds.of(0d), lastUpdateDetectionTime = Seconds.of(0d);
     private Pose2d lastPose = new Pose2d();
     private int numPoseStableUpdates = 0;
-    private ArrayList<VisionGamePiece> tracker = new ArrayList<>();
 
     private Optional<VisionEstimate> lastEstimate = Optional.empty();
 
@@ -64,25 +61,6 @@ public abstract class VisionSubsystem extends SubsystemBase {
         m_deviations = cameras[0].getAprilTagStdDevs();
         this.agreedTranslationUpdatesThreshold = agreedTranslationUpdatesThreshold;
         this.agreedTranslationUpdateEpsilon = agreedTranslationUpdateEpsilon;
-    }
-
-    private void updateDetection() {
-        ArrayList<VisionGamePiece> all = getAllDetections();
-        if (all.size() == 0)
-            return;
-        Time now = Seconds.of(Timer.getFPGATimestamp());
-        tracker.removeIf((piece) -> now.minus(piece.getTimeStamp()).gte(Seconds.of(0.2)));
-        while (tracker.size() > 20) {
-            tracker.remove(0);
-        }
-        for (VisionGamePiece detection : all) {
-            tracker.add(detection);
-        }
-    }
-
-    private ArrayList<VisionGamePiece> getAllDetections() {
-        ArrayList<VisionGamePiece> all = new ArrayList<>();
-        return all;
     }
 
     public void applyVisionEstimate(VisionIO camera, VisionEstimate estimate) {
@@ -114,6 +92,8 @@ public abstract class VisionSubsystem extends SubsystemBase {
                     lastUpdatePoseTime = Seconds.of(Timer.getFPGATimestamp());
                 }
             });
+
+            // camera.inputs.
         }
     }
 
@@ -125,7 +105,6 @@ public abstract class VisionSubsystem extends SubsystemBase {
                 Logger.processInputs(camera.getName(), camera.inputs);
             }
             LoggedTracer.record(name);
-            updateDetection();
             updateLocalization();
             Logger.recordOutput(name + "/Enabled", enabled);
             Logger.recordOutput(name + "/NumPoseStableUpdates", numPoseStableUpdates);
