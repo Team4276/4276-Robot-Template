@@ -8,10 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Distance;
@@ -20,7 +18,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.io.vision.CameraIO;
+import frc.lib.io.vision.VisionIO;
 import frc.lib.util.LoggedTracer;
 import frc.lib.util.vision.CameraPipeline;
 import frc.lib.util.vision.VisionEstimate;
@@ -30,9 +28,10 @@ import frc.robot.subsystems.drive.Drive;
 
 import org.littletonrobotics.junction.Logger;
 
-public abstract class CameraSubsystem extends SubsystemBase {
+public abstract class VisionSubsystem extends SubsystemBase {
 
-    private CameraConfig config = new CameraConfig();
+    private VisionIO[] cameras;
+    private String name;
 
     private Vector<N3> m_deviations;
 
@@ -45,10 +44,26 @@ public abstract class CameraSubsystem extends SubsystemBase {
 
     private boolean enabled = true;
 
-    public CameraSubsystem(CameraConfig config) {
-        super(config.name);
-        this.config = config;
-        m_deviations = config.cameras[0].getAprilTagStdDevs();
+    private int agreedTranslationUpdatesThreshold;
+    private Distance agreedTranslationUpdateEpsilon;
+
+    public VisionSubsystem(String name, VisionIO[] cameras) {
+        super(name);
+        this.name = name;
+        this.cameras = cameras;
+        m_deviations = cameras[0].getAprilTagStdDevs();
+        this.agreedTranslationUpdatesThreshold = 0;
+        this.agreedTranslationUpdateEpsilon = Meters.of(0.1);
+    }
+
+    public VisionSubsystem(String name, VisionIO[] cameras, int agreedTranslationUpdatesThreshold,
+            Distance agreedTranslationUpdateEpsilon) {
+        super(name);
+        this.name = name;
+        this.cameras = cameras;
+        m_deviations = cameras[0].getAprilTagStdDevs();
+        this.agreedTranslationUpdatesThreshold = agreedTranslationUpdatesThreshold;
+        this.agreedTranslationUpdateEpsilon = agreedTranslationUpdateEpsilon;
     }
 
     private void updateDetection() {
@@ -61,7 +76,6 @@ public abstract class CameraSubsystem extends SubsystemBase {
             tracker.remove(0);
         }
         for (VisionGamePiece detection : all) {
-            // if (detection.type == 0) continue;
             tracker.add(detection);
         }
     }
@@ -71,18 +85,14 @@ public abstract class CameraSubsystem extends SubsystemBase {
         return all;
     }
 
-    public void applyVisionEstimate(CameraIO camera, VisionEstimate estimate) {
-        // Drive.mInstance.addVisionUpdate(
-        // estimate.getPose(),
-        // estimate.getTimestamp(),
-        // camera.getAprilTagStdDevs().times(estimate.getAverageDistance().in(Meters)));
+    public void applyVisionEstimate(VisionIO camera, VisionEstimate estimate) {
         Drive.mInstance.addVisionMeasurement(estimate);
 
         if (estimate.getPose() != lastPose) {
             if (Drive.mInstance
                     .getPose()
                     .getTranslation()
-                    .getDistance(estimate.getPose().getTranslation()) < config.agreedTranslationUpdateEpsilon
+                    .getDistance(estimate.getPose().getTranslation()) < agreedTranslationUpdateEpsilon
                             .in(Units.Meters)) {
                 numPoseStableUpdates++;
             } else {
@@ -95,41 +105,36 @@ public abstract class CameraSubsystem extends SubsystemBase {
     }
 
     private void updateLocalization() {
-        for (CameraIO camera : config.cameras) {
+        for (VisionIO camera : cameras) {
             Optional<List<VisionEstimate>> estimatesOptional = camera.getLastEstimates();
             estimatesOptional.ifPresent(estimates -> {
                 for (VisionEstimate estimate : estimates) {
-                    applyVisionEstimate(camera, estimate);
+                    Optional<VisionEstimate> filtered = filterEstimate(estimate);
+                    filtered.ifPresent(est -> applyVisionEstimate(camera, est));
                     lastUpdatePoseTime = Seconds.of(Timer.getFPGATimestamp());
                 }
             });
         }
     }
 
-    @Deprecated
-    private void updatePose() {
-        updateLocalization();
-    }
-
     @Override
     public void periodic() {
         if (enabled) {
-            for (CameraIO camera : config.cameras) {
+            for (VisionIO camera : cameras) {
                 camera.updateInputs();
                 Logger.processInputs(camera.getName(), camera.inputs);
             }
-            outputTelemetry();
+            LoggedTracer.record(name);
             updateDetection();
-            updatePose();
-            Logger.recordOutput(config.name + "/Enabled", enabled);
-            Logger.recordOutput(config.name + "/NumPoseStableUpdates", numPoseStableUpdates);
-            Logger.recordOutput(config.name + "/LastPose", lastPose);
+            updateLocalization();
+            Logger.recordOutput(name + "/Enabled", enabled);
+            Logger.recordOutput(name + "/NumPoseStableUpdates", numPoseStableUpdates);
+            Logger.recordOutput(name + "/LastPose", lastPose);
         }
-        LoggedTracer.record(config.name);
     }
 
-    public void setPipeline(Function<CameraIO, CameraPipeline> function) {
-        for (CameraIO camera : config.cameras) {
+    public void setPipeline(Function<VisionIO, CameraPipeline> function) {
+        for (VisionIO camera : cameras) {
             CameraPipeline pipelineToApply = function.apply(camera);
             camera.setPipeline(pipelineToApply);
         }
@@ -139,16 +144,13 @@ public abstract class CameraSubsystem extends SubsystemBase {
         setPipeline(io -> pipeline);
     }
 
-    public void outputTelemetry() {
-    }
-
     public Time getLastUpdatedPoseTime() {
-        updatePose();
+        updateLocalization();
         return lastUpdatePoseTime;
     }
 
     public boolean getPoseStable() {
-        return numPoseStableUpdates >= config.agreedTranslationUpdatesThreshold;
+        return numPoseStableUpdates >= agreedTranslationUpdatesThreshold;
     }
 
     public boolean getPoseStable(long count) {
@@ -156,7 +158,7 @@ public abstract class CameraSubsystem extends SubsystemBase {
     }
 
     public Pose2d getLatestUpdate() {
-        updatePose();
+        updateLocalization();
         return lastPose;
     }
 
@@ -166,19 +168,6 @@ public abstract class CameraSubsystem extends SubsystemBase {
 
     public Optional<VisionEstimate> filterEstimate(VisionEstimate estimate) {
         return Optional.of(estimate);
-    }
-
-    public static class CameraIOConfig {
-        public String name = null;
-        public Pose3d robotToCameraOffset = null;
-        public Vector<N3> aprilTagVisionStdDevs = VecBuilder.fill(0.3, 0.3, 99999.0);
-    }
-
-    public static class CameraConfig {
-        public String name = "Vision";
-        public CameraIO cameras[];
-        public int agreedTranslationUpdatesThreshold;
-        public Distance agreedTranslationUpdateEpsilon;
     }
 
     public void disable() {
@@ -193,8 +182,16 @@ public abstract class CameraSubsystem extends SubsystemBase {
         return enabled;
     }
 
+    public Command enableCommand() {
+        return Commands.runOnce(() -> enable());
+    }
+
+    public Command disableCommand() {
+        return Commands.runOnce(() -> disable());
+    }
+
     public void setSTDDeviations(Vector<N3> deviations) {
-        for (CameraIO camera : config.cameras) {
+        for (VisionIO camera : cameras) {
             camera.setStdDeviations(deviations);
         }
         m_deviations = deviations;
@@ -210,5 +207,9 @@ public abstract class CameraSubsystem extends SubsystemBase {
             ids = FieldLayout.getIDArrayFromAprilTagArray(lastEstimate.get().getTags());
         }
         return ids;
+    }
+
+    public VisionIO[] getCameras() {
+        return cameras;
     }
 }

@@ -2,14 +2,14 @@ package frc.robot.subsystems.vision;
 
 import java.util.Optional;
 
-import frc.lib.bases.CameraSubsystem;
+import frc.lib.bases.VisionSubsystem;
 import frc.lib.util.vision.VisionEstimate;
 
-public class Vision extends CameraSubsystem {
+public class Vision extends VisionSubsystem {
     public static final Vision mInstance = new Vision();
 
     public Vision() {
-        super(VisionConstants.getConfig());
+        super(VisionConstants.getName(), VisionConstants.getCameras());
     }
 
     @Override

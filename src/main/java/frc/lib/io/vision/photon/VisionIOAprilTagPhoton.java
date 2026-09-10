@@ -5,7 +5,6 @@ import static edu.wpi.first.units.Units.Seconds;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.Timer;
-import frc.lib.bases.CameraSubsystem.CameraIOConfig;
 import frc.lib.util.vision.VisionEstimate;
 import frc.robot.game.FieldLayout;
 import frc.robot.subsystems.drive.Drive;
@@ -18,7 +17,7 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 
-public class AprilTagPhotonCameraIO extends PhotonCameraIO {
+public class VisionIOAprilTagPhoton extends VisionIOPhotonCamera {
 
 	private final PhotonPoseEstimator estimator;
 	private final AprilTagFieldLayout layout;
@@ -27,7 +26,7 @@ public class AprilTagPhotonCameraIO extends PhotonCameraIO {
 
 	private Optional<List<VisionEstimate>> lastGivenEstimate = Optional.empty();
 
-	public AprilTagPhotonCameraIO(CameraIOConfig config, PoseStrategy strategy, AprilTagFieldLayout layout) {
+	public VisionIOAprilTagPhoton(CameraIOConfig config, PoseStrategy strategy, AprilTagFieldLayout layout) {
 		super(config);
 		this.layout = layout;
 		this.strategy = strategy;
