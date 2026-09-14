@@ -7,15 +7,16 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N3;
-import frc.lib.bases.CameraSubsystem.CameraIOConfig;
-import frc.lib.bases.CameraSubsystem.CameraConfig;
-import frc.lib.io.vision.CameraIO;
-import frc.lib.io.vision.photon.PhotonCameraIO;
-import frc.lib.io.vision.sim.EmptySimulatedCameraIO;
+import frc.lib.io.vision.VisionIO.CameraIOConfig;
+import frc.lib.io.vision.VisionIO;
+import frc.lib.io.vision.photon.VisionIOAprilTagPhoton;
+import frc.lib.io.vision.sim.VisionIOSimulated;
 import frc.robot.RobotConstants;
 import frc.robot.game.FieldLayout;
 
 public class VisionConstants {
+
+    public static final String NAME = "Vision";
 
     public static final Vector<N3> DEFAULT_STD_DEVIATION = VecBuilder.fill(0.3, 0.3, 99999999999.999999);
 
@@ -39,47 +40,23 @@ public class VisionConstants {
             return config;
         }
 
-        public static final CameraIO getIO() {
+        public static final VisionIO getIO() {
             return switch (RobotConstants.mode) {
-                case REAL -> new PhotonCameraIO(getConfig());
-                // case SIM -> RobotConstants.simulateVision ? new
-                // AprilTagSimulatedPhotonCameraIO(
-                // getVisionSystemSim(),
-                // getConfig(),
-                // getSimConfig(),
-                // APRIL_TAG_STRATEGY)
-                // : new EmptySimulatedCameraIO(getConfig());
-                case REPLAY -> new EmptySimulatedCameraIO(getConfig());
-                default -> new EmptySimulatedCameraIO(getConfig());
+                case REAL -> new VisionIOAprilTagPhoton(getConfig(), APRIL_TAG_STRATEGY, LAYOUT);
+                case SIM -> new VisionIOSimulated(getConfig());
+                case REPLAY -> new VisionIO(getConfig()) {
+                    public void updateInputs() {
+                    };
+                };
             };
         }
-
-        // public static SimulatedCameraIOConfig getSimConfig() {
-        // SimulatedCameraIOConfig config = new SimulatedCameraIOConfig();
-        // config.calibErrorPx = 0.35;
-        // config.calibErrorPy = 0.25;
-        // config.resolutionHeightPixels = 600; // pixels
-        // config.resolutionWidthPixels = 800; // pixels
-        // config.kErrThreshold = Units.Degrees.of(25.0);
-        // config.maxUpdateTagDistance = Units.Meters.of(1.8);
-        // config.kFieldOfView = Units.Degrees.of(82.0);
-        // config.side = Side.FRONT;
-
-        // return config;
-        // }
     }
 
-    public static CameraConfig getConfig() {
-        CameraConfig config = new CameraConfig();
-
-        return config;
+    public static String getName() {
+        return NAME;
     }
 
-    // TODO vision sim
-
-    // public static VisionSystemSim getVisionSystemSim() {
-    // VisionSystemSim visionSim = new VisionSystemSim("main");
-    // visionSim.addAprilTags(FieldLayout.kAprilTagMap);
-    // return visionSim;
-    // }
+    public static VisionIO[] getCameras() {
+        return new VisionIO[] { BackConstants.getIO() };
+    }
 }
