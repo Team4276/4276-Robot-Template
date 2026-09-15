@@ -1,17 +1,17 @@
 package frc.lib.io;
 
-import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Volts;
+import static org.wpilib.units.Units.Amps;
+import static org.wpilib.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import edu.wpi.first.units.AngleUnit;
-import edu.wpi.first.units.AngularVelocityUnit;
-import edu.wpi.first.units.BaseUnits;
-import edu.wpi.first.units.DimensionlessUnit;
-import edu.wpi.first.units.TimeUnit;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.VoltageUnit;
-import edu.wpi.first.units.measure.*;
+import org.wpilib.units.AngleUnit;
+import org.wpilib.units.AngularVelocityUnit;
+import org.wpilib.units.BaseUnits;
+import org.wpilib.units.DimensionlessUnit;
+import org.wpilib.units.TimeUnit;
+import org.wpilib.units.Units;
+import org.wpilib.units.VoltageUnit;
+import org.wpilib.units.measure.*;
 import frc.lib.util.Util;
 
 import java.util.function.UnaryOperator;
@@ -23,13 +23,7 @@ import org.littletonrobotics.junction.AutoLog;
  * mechanism.
  */
 public abstract class MotorIO {
-	public final AngleUnit unitType;
-	public final TimeUnit time;
-	public final MotorIOInputsAutoLogged inputs;
-	public final int numFollowers;
-	private Setpoint setpoint = Setpoint.withNeutralSetpoint();
-	private boolean enabled = true;
-
+	
 	@AutoLog
 	public static class MotorIOInputs {
 		public boolean enabled = true;
@@ -59,6 +53,13 @@ public abstract class MotorIO {
 
 		public boolean configFailed = false;
 	}
+
+	public final AngleUnit unitType;
+	public final TimeUnit time;
+	public final MotorIOInputsAutoLogged inputs;
+	public final int numFollowers;
+	private Setpoint setpoint = Setpoint.withNeutralSetpoint();
+	private boolean enabled = true;
 
 	/**
 	 * Updates MotorIO's inputs with values from the motor.

@@ -1,14 +1,14 @@
 package frc.lib.bases;
 
-import static edu.wpi.first.units.Units.RPM;
-import static edu.wpi.first.units.Units.Seconds;
+import static org.wpilib.units.Units.RPM;
+import static org.wpilib.units.Units.Seconds;
 
-import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.units.BaseUnits;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Time;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
+import org.wpilib.math.filter.Debouncer;
+import org.wpilib.units.BaseUnits;
+import org.wpilib.units.measure.AngularVelocity;
+import org.wpilib.units.measure.Time;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Commands;
 import frc.lib.io.MotorIO;
 import frc.lib.io.MotorIO.Setpoint;
 import frc.lib.util.Util;

@@ -2,8 +2,8 @@ package frc.lib.io;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.wpilibj.Notifier;
+import org.wpilib.units.Units;
+import org.wpilib.system.Notifier;
 import frc.lib.sim.MechanismSim;
 
 /**

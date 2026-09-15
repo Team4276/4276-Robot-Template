@@ -1,14 +1,14 @@
 package frc.lib.sim;
 
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Time;
-import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import org.wpilib.math.system.DCMotor;
+import org.wpilib.math.system.Models;
+import org.wpilib.units.Units;
+import org.wpilib.units.measure.Angle;
+import org.wpilib.units.measure.AngularVelocity;
+import org.wpilib.units.measure.Current;
+import org.wpilib.units.measure.Time;
+import org.wpilib.units.measure.Voltage;
+import org.wpilib.simulation.FlywheelSim;
 
 /**
  * Class for simulating a rolling system powerd by one or more motors like a
@@ -25,7 +25,7 @@ public class RollerSim extends MechanismSim {
 	public RollerSim(RollerSimConstants constants) {
 		super(constants.gearing);
 		sim = new FlywheelSim(
-				LinearSystemId.createFlywheelSystem(constants.motor, constants.momentOfInertia, constants.gearing),
+				Models.flywheelFromPhysicalConstants(constants.motor, constants.momentOfInertia, constants.gearing),
 				constants.motor);
 	}
 
@@ -45,7 +45,7 @@ public class RollerSim extends MechanismSim {
 
 	@Override
 	public AngularVelocity getVelocity() {
-		return Units.Rotations.of(sim.getAngularVelocityRPM()).per(Units.Minute);
+		return Units.Rotations.of(sim.getAngularVelocity()).per(Units.Minute);
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class RollerSim extends MechanismSim {
 
 	@Override
 	public Current getStatorCurrent() {
-		return Units.Amps.of(sim.getCurrentDrawAmps());
+		return Units.Amps.of(sim.getCurrentDraw());
 	}
 
 	@Override

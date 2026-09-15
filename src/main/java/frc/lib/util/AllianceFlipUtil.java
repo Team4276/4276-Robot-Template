@@ -1,11 +1,12 @@
 package frc.lib.util;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Translation2d;
+import org.wpilib.units.measure.Distance;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.internal.DriverStationBackend;
+import org.wpilib.smartdashboard.SmartDashboard;
 import frc.robot.game.FieldLayout;
 import frc.robot.RobotConstants;
 import frc.robot.RobotConstants.Mode;
@@ -73,8 +74,8 @@ public class AllianceFlipUtil {
     public static boolean shouldFlip() {
         overrideFlip = SmartDashboard.getBoolean("Sim/OverrideFlip", overrideFlip);
 
-        return DriverStation.getAlliance().isPresent()
-                && DriverStation.getAlliance().get() == DriverStation.Alliance.Red
+        return DriverStationBackend.getAlliance().isPresent()
+                && DriverStationBackend.getAlliance().get() == Alliance.RED
                 && (RobotConstants.mode == Mode.SIM ? !overrideFlip : true);
     }
 }

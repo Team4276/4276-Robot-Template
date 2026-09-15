@@ -2,8 +2,8 @@ package frc.lib.util;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Timer;
+import org.wpilib.math.util.Units;
+import org.wpilib.system.Timer;
 
 /** Utility class for logging code execution times. */
 public class LoggedTracer {
@@ -14,12 +14,12 @@ public class LoggedTracer {
 
 	/** Reset the clock. */
 	public static void reset() {
-		startTime = Timer.getFPGATimestamp();
+		startTime = Timer.getMonotonicTimestamp();
 	}
 
 	/** Save the time elapsed since the last reset or record. */
 	public static void record(String epochName) {
-		double now = Timer.getFPGATimestamp();
+		double now = Timer.getMonotonicTimestamp();
 		Logger.recordOutput(
 				"Logged Tracer/" + epochName + " Milliseconds", Units.secondsToMilliseconds(now - startTime));
 		startTime = now;

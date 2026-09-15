@@ -1,15 +1,15 @@
 package frc.lib.sim;
 
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.MomentOfInertia;
-import edu.wpi.first.units.measure.Time;
-import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import org.wpilib.math.system.DCMotor;
+import org.wpilib.units.Units;
+import org.wpilib.units.measure.Angle;
+import org.wpilib.units.measure.AngularVelocity;
+import org.wpilib.units.measure.Current;
+import org.wpilib.units.measure.Distance;
+import org.wpilib.units.measure.MomentOfInertia;
+import org.wpilib.units.measure.Time;
+import org.wpilib.units.measure.Voltage;
+import org.wpilib.simulation.SingleJointedArmSim;
 
 /**
  * Class for simulating a pivoting system powerd by one or more motors like a
@@ -57,17 +57,17 @@ public class PivotSim extends MechanismSim {
 
 	@Override
 	public AngularVelocity getVelocity() {
-		return Units.Radians.of(sim.getVelocityRadPerSec()).per(Units.Second);
+		return Units.Radians.of(sim.getVelocity()).per(Units.Second);
 	}
 
 	@Override
 	public Angle getPosition() {
-		return Units.Radians.of(sim.getAngleRads());
+		return Units.Radians.of(sim.getAngle());
 	}
 
 	@Override
 	public Current getStatorCurrent() {
-		return Units.Amps.of(sim.getCurrentDrawAmps());
+		return Units.Amps.of(sim.getCurrentDraw());
 	}
 
 	@Override

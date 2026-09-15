@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Volts;
+import static org.wpilib.units.Units.Volts;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,23 +17,23 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
-import choreo.auto.AutoFactory;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Threads;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+// import choreo.auto.AutoFactory;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.system.RobotController;
+import org.wpilib.system.Threads;
+import org.wpilib.system.Timer;
+import org.wpilib.smartdashboard.SmartDashboard;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.CommandScheduler;
 import frc.lib.util.LoggedTracer;
-import frc.robot.auto.AutoSelector;
+// import frc.robot.auto.AutoSelector;
 import frc.robot.controlboard.ControlBoard;
 // import frc.robot.subsystems.drive.Drive;
 
 public class Robot extends LoggedRobot {
-    private AutoFactory mAutoFactory;
+    // private AutoFactory mAutoFactory;
     private Command mAutonomousCommand;
-    private final AutoSelector mAutoSelector;
+    // private final AutoSelector mAutoSelector;
 
     public static boolean resetPoseForAuto = false;
 
@@ -71,7 +71,7 @@ public class Robot extends LoggedRobot {
         // true,
         // Drive.mInstance);
 
-        mAutoSelector = new AutoSelector(mAutoFactory);
+        // mAutoSelector = new AutoSelector(mAutoFactory);
 
         // Log active commands
         Map<String, Integer> commandCounts = new HashMap<>();
@@ -96,7 +96,7 @@ public class Robot extends LoggedRobot {
 
         RobotController.setBrownoutVoltage(Volts.of(5.5));
 
-        SmartDashboard.putData("Auto Selector", mAutoSelector.getAutoChooser());
+        // SmartDashboard.putData("Auto Selector", mAutoSelector.getAutoChooser());
     }
 
     @Override
@@ -104,13 +104,13 @@ public class Robot extends LoggedRobot {
         LoggedTracer.reset();
 
         try {
-            Threads.setCurrentThreadPriority(true, 10);
+            // Threads.setCurrentThreadPriority(true, 10);
 
             CommandScheduler.getInstance().run();
-            Threads.setCurrentThreadPriority(false, 0);
+            // Threads.setCurrentThreadPriority(false, 0);
         } catch (Exception e) {
             Logger.recordOutput("Error/Last Loop Error/Last Error Message", e.getMessage());
-            Logger.recordOutput("Error/Last Loop Error/Last Error Timestamp", Timer.getFPGATimestamp());
+            Logger.recordOutput("Error/Last Loop Error/Last Error Timestamp", Timer.getMonotonicTimestamp()); // TODO: check if this is correct time
         }
     }
 
@@ -132,7 +132,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousInit() {
-        mAutonomousCommand = mAutoSelector.getSelectedCommand();
+        // mAutonomousCommand = mAutoSelector.getSelectedCommand();
 
         if (mAutonomousCommand != null) {
             CommandScheduler.getInstance().schedule(mAutonomousCommand);
@@ -160,19 +160,6 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopExit() {
-    }
-
-    @Override
-    public void testInit() {
-        CommandScheduler.getInstance().cancelAll();
-    }
-
-    @Override
-    public void testPeriodic() {
-    }
-
-    @Override
-    public void testExit() {
     }
 
     @Override

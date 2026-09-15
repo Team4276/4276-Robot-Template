@@ -1,6 +1,6 @@
 package frc.lib.io;
 
-import static edu.wpi.first.units.Units.Hertz;
+import static org.wpilib.units.Units.Hertz;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusCode;
@@ -13,18 +13,19 @@ import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.units.AngleUnit;
-import edu.wpi.first.units.TimeUnit;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Dimensionless;
-import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.Timer;
+import org.wpilib.units.AngleUnit;
+import org.wpilib.units.TimeUnit;
+import org.wpilib.units.Units;
+import org.wpilib.units.measure.Angle;
+import org.wpilib.units.measure.AngularVelocity;
+import org.wpilib.units.measure.Dimensionless;
+import org.wpilib.units.measure.Voltage;
+import org.wpilib.system.Timer;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -176,9 +177,15 @@ public class MotorIOTalonFX extends MotorIO {
 	}
 
 	private void setNeutralMode(TalonFX fx, NeutralModeValue neutralMode) {
-		Logger.recordOutput("TALON FX NEUTRAL MODE SET!!", Timer.getFPGATimestamp());
+		Logger.recordOutput("TALON FX NEUTRAL MODE SET!!", Timer.getMonotonicTimestamp());
 		threadPoolExecutor.submit(() -> {
-			fx.setNeutralMode(neutralMode);
+			if(neutralMode == NeutralModeValue.Brake){
+				fx.setControl(new StaticBrake());
+				
+			} else {
+				fx.setControl(new CoastOut());
+
+			}
 		});
 	}
 

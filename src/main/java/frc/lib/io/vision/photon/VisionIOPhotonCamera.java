@@ -77,7 +77,7 @@ public class VisionIOPhotonCamera extends VisionIO {
                 .toArray();
     }
 
-    protected static edu.wpi.first.apriltag.AprilTag[] getTagArrayFromPhotonTargets(
+    protected static org.wpilib.vision.apriltag.AprilTag[] getTagArrayFromPhotonTargets(
             List<PhotonTrackedTarget> targets) {
         return FieldLayout.getAprilTagArrayFromIDs(getIDArrayFromPhotonTargets(targets));
     }

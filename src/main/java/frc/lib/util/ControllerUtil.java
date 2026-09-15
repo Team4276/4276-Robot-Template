@@ -1,14 +1,14 @@
 package frc.lib.util;
 
-import static edu.wpi.first.units.Units.Value;
+import static org.wpilib.units.Units.Value;
 
-import edu.wpi.first.hal.util.BoundaryException;
-import edu.wpi.first.units.BaseUnits;
-import edu.wpi.first.units.measure.Time;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import org.wpilib.hardware.hal.util.BoundaryException;
+import org.wpilib.units.BaseUnits;
+import org.wpilib.units.measure.Time;
+import org.wpilib.system.Timer;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.button.Trigger;
 import frc.lib.bases.MotorSubsystem;
 import frc.lib.io.MotorIO;
 import frc.lib.io.MotorIO.Mode;
@@ -71,7 +71,7 @@ public class ControllerUtil {
 				next = createFromMode(setpointMode, initialValue + offset);
 			} else {
 				if (followed.mode != setpointMode) {
-					Logger.recordOutput("Jogging/Last Unable to Jog Seconds timestamp", Timer.getFPGATimestamp());
+					Logger.recordOutput("Jogging/Last Unable to Jog Seconds timestamp", Timer.getMonotonicTimestamp());
 					return;
 				}
 				if (followed.baseUnits + offset == initialValue) {

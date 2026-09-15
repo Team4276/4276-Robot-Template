@@ -1,14 +1,14 @@
 package frc.lib.util.vision;
 
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.Seconds;
+import static org.wpilib.units.Units.Meters;
+import static org.wpilib.units.Units.Seconds;
 
-import edu.wpi.first.apriltag.AprilTag;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.units.BaseUnits;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.Time;
-import edu.wpi.first.wpilibj.Timer;
+import org.wpilib.vision.apriltag.AprilTag;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.units.BaseUnits;
+import org.wpilib.units.measure.Distance;
+import org.wpilib.units.measure.Time;
+import org.wpilib.system.Timer;
 import frc.robot.game.FieldLayout;
 // import frc.robot.subsystems.drive.Drive;
 import java.util.Optional;
@@ -33,11 +33,11 @@ public class VisionEstimate {
     }
 
     public VisionEstimate(Pose2d pose, int tagIDs[]) {
-        this(pose, Seconds.of(Timer.getFPGATimestamp()), tagIDs);
+        this(pose, Seconds.of(Timer.getMonotonicTimestamp()), tagIDs);
     }
 
     public VisionEstimate(Pose2d pose, AprilTag tags[]) {
-        this(pose, Seconds.of(Timer.getFPGATimestamp()), tags);
+        this(pose, Seconds.of(Timer.getMonotonicTimestamp()), tags);
     }
 
     public Pose2d getPose() {

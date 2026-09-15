@@ -1,6 +1,6 @@
 package frc.lib.hid;
 
-import edu.wpi.first.wpilibj.Joystick;
+import org.wpilib.driverstation.Joystick;
 
 public class CowsController implements JoystickOutputController {
     private double JOYSTICK_DEADBAND = 0.1;

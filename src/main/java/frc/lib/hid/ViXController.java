@@ -1,12 +1,13 @@
 package frc.lib.hid;
 
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import org.wpilib.driverstation.POVDirection;
+import org.wpilib.driverstation.GenericHID.RumbleType;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.SequentialCommandGroup;
+import org.wpilib.command2.button.CommandNiDsXboxController;
 
-public class ViXController extends CommandXboxController implements JoystickOutputController {
+public class ViXController extends CommandNiDsXboxController implements JoystickOutputController {
     private double JOYSTICK_DEADBAND = 0.1;
     private double TRIGGER_DEADBAND = 0.25;
 
@@ -48,19 +49,19 @@ public class ViXController extends CommandXboxController implements JoystickOutp
     }
 
     public boolean getPOVUP() {
-        return getHID().getPOV() == 0;
+        return getHID().getPOV() == POVDirection.UP;
     }
 
     public boolean getPOVRIGHT() {
-        return getHID().getPOV() == 90;
+        return getHID().getPOV() == POVDirection.RIGHT;
     }
 
     public boolean getPOVDOWN() {
-        return getHID().getPOV() == 180;
+        return getHID().getPOV() == POVDirection.DOWN;
     }
 
     public boolean getPOVLEFT() {
-        return getHID().getPOV() == 270;
+        return getHID().getPOV() == POVDirection.LEFT;
     }
 
     public boolean getLT() {

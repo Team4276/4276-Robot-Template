@@ -1,16 +1,16 @@
 package frc.lib.sim;
 
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.units.BaseUnits;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.Mass;
-import edu.wpi.first.units.measure.Time;
-import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import org.wpilib.math.system.DCMotor;
+import org.wpilib.units.BaseUnits;
+import org.wpilib.units.Units;
+import org.wpilib.units.measure.Angle;
+import org.wpilib.units.measure.AngularVelocity;
+import org.wpilib.units.measure.Current;
+import org.wpilib.units.measure.Distance;
+import org.wpilib.units.measure.Mass;
+import org.wpilib.units.measure.Time;
+import org.wpilib.units.measure.Voltage;
+import org.wpilib.simulation.ElevatorSim;
 import frc.lib.util.Util;
 
 /**
@@ -29,7 +29,7 @@ public class LinearSim extends MechanismSim {
 	public LinearSim(LinearSimConstants constants) {
 		super(constants.gearing);
 		this.converter = constants.converter;
-		sim = new edu.wpi.first.wpilibj.simulation.ElevatorSim(
+		sim = new org.wpilib.simulation.ElevatorSim(
 				constants.motor,
 				constants.gearing,
 				constants.carriageMass.in(Units.Kilograms),
@@ -62,18 +62,18 @@ public class LinearSim extends MechanismSim {
 	@Override
 	public AngularVelocity getVelocity() {
 		return converter
-				.toAngle(Units.Meters.of(sim.getVelocityMetersPerSecond()))
+				.toAngle(Units.Meters.of(sim.getVelocity()))
 				.per(Units.Second);
 	}
 
 	@Override
 	public Angle getPosition() {
-		return converter.toAngle(Units.Meters.of(sim.getPositionMeters()));
+		return converter.toAngle(Units.Meters.of(sim.getPosition()));
 	}
 
 	@Override
 	public Current getStatorCurrent() {
-		return Units.Amps.of(sim.getCurrentDrawAmps());
+		return Units.Amps.of(sim.getCurrentDraw());
 	}
 
 	@Override

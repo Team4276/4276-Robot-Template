@@ -1,14 +1,14 @@
 package frc.lib.sim;
 
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Unit;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Time;
-import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.Timer;
+import org.wpilib.units.Measure;
+import org.wpilib.units.Unit;
+import org.wpilib.units.Units;
+import org.wpilib.units.measure.Angle;
+import org.wpilib.units.measure.AngularVelocity;
+import org.wpilib.units.measure.Current;
+import org.wpilib.units.measure.Time;
+import org.wpilib.units.measure.Voltage;
+import org.wpilib.system.Timer;
 
 /**
  * Abstract class for simulatable mechanisms.
@@ -76,7 +76,7 @@ public abstract class MechanismSim {
 	 * was simulated.
 	 */
 	public void simulate() {
-		Time currentTimestamp = Units.Seconds.of(Timer.getFPGATimestamp());
+		Time currentTimestamp = Units.Seconds.of(Timer.getMonotonicTimestamp());
 		update(currentTimestamp.minus(lastTimeStamp));
 		lastTimeStamp = currentTimestamp;
 	}
@@ -85,7 +85,7 @@ public abstract class MechanismSim {
 	 * Creates a MechanismSim
 	 */
 	protected MechanismSim(double gearing) {
-		lastTimeStamp = Units.Seconds.of(Timer.getFPGATimestamp());
+		lastTimeStamp = Units.Seconds.of(Timer.getMonotonicTimestamp());
 		this.gearing = gearing;
 	}
 }

@@ -2,15 +2,16 @@ package frc.lib.bases;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.units.BaseUnits;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Time;
-import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.*;
+import org.wpilib.units.BaseUnits;
+import org.wpilib.units.Units;
+import org.wpilib.units.measure.Angle;
+import org.wpilib.units.measure.AngularVelocity;
+import org.wpilib.units.measure.Time;
+import org.wpilib.units.measure.Voltage;
+import org.wpilib.driverstation.DriverStation;
+import org.wpilib.framework.RobotBase;
+import org.wpilib.system.Timer;
+import org.wpilib.command2.*;
 import frc.lib.io.MotorIO;
 import frc.lib.io.MotorIO.Setpoint;
 import frc.lib.util.DelayedBoolean;
@@ -62,7 +63,7 @@ public class ServoMotorSubsystem<IO extends MotorIO> extends MotorSubsystem<IO> 
 		this(io, name, epsilonThreshold, tuningMode);
 		this.isHomingSubsystem = true;
 		homingConfig = config;
-		mHomingDelay = new DelayedBoolean(Timer.getFPGATimestamp(), homingConfig.kHomingTimeout.in(Units.Seconds));
+		mHomingDelay = new DelayedBoolean(Timer.getMonotonicTimestamp(), homingConfig.kHomingTimeout.in(Units.Seconds));
 	}
 
 	public ServoMotorSubsystem(IO io, String name, Angle epsilonThreshold, ServoHomingConfig config) {
@@ -76,15 +77,15 @@ public class ServoMotorSubsystem<IO extends MotorIO> extends MotorSubsystem<IO> 
 			if (mNeedsToHome && setpointNearHome() && nearHomingLocation()) {
 				mHoming = true;
 				useSoftLimits(false);
-				mHomingDelay = new DelayedBoolean(Timer.getFPGATimestamp(),
+				mHomingDelay = new DelayedBoolean(Timer.getMonotonicTimestamp(),
 						homingConfig.kHomingTimeout.in(Units.Seconds));
 			}
 			if (mHoming) {
 				io.applySetpoint(Setpoint.withVoltageSetpoint(homingConfig.kHomingVoltage));
 				if (mHomingDelay.update(
-						Timer.getFPGATimestamp(),
+						Timer.getMonotonicTimestamp(),
 						Math.abs(getVelocity().baseUnitMagnitude()) < homingConfig.kSetHomedVelocity.baseUnitMagnitude()
-								&& DriverStation.isEnabled())) {
+								&& RobotBase.isEnabled())) {
 					setCurrentPosition(homingConfig.kHomePosition);
 					applySetpoint(Setpoint.withMotionMagicSetpoint(homingConfig.kHomePosition));
 					useSoftLimits(true);

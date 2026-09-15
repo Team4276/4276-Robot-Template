@@ -1,7 +1,7 @@
 package frc.robot.controlboard;
 
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Time;
+import org.wpilib.units.Units;
+import org.wpilib.units.measure.Time;
 
 public class ControlBoardConstants {
 	public static enum InputMode {

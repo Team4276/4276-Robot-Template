@@ -1,22 +1,22 @@
 package frc.lib.bases;
 
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.Seconds;
+import static org.wpilib.units.Units.Meters;
+import static org.wpilib.units.Units.Seconds;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-import edu.wpi.first.math.Vector;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.Time;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.wpilib.math.linalg.Vector;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.numbers.N3;
+import org.wpilib.units.Units;
+import org.wpilib.units.measure.Distance;
+import org.wpilib.units.measure.Time;
+import org.wpilib.system.Timer;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.SubsystemBase;
 import frc.lib.io.vision.VisionIO;
 import frc.lib.util.LoggedTracer;
 import frc.lib.util.vision.CameraPipeline;
@@ -80,7 +80,7 @@ public abstract class VisionSubsystem extends SubsystemBase {
         }
         lastEstimate = Optional.of(estimate);
         lastPose = estimate.getPose();
-        lastUpdatePoseTime = Seconds.of(Timer.getFPGATimestamp());
+        lastUpdatePoseTime = Seconds.of(Timer.getTimestamp());
     }
 
     private void updateLocalization() {
@@ -90,7 +90,7 @@ public abstract class VisionSubsystem extends SubsystemBase {
                 for (VisionEstimate estimate : estimates) {
                     Optional<VisionEstimate> filtered = filterEstimate(estimate);
                     filtered.ifPresent(est -> applyVisionEstimate(camera, est));
-                    lastUpdatePoseTime = Seconds.of(Timer.getFPGATimestamp());
+                    lastUpdatePoseTime = Seconds.of(Timer.getTimestamp());
                 }
             });
 

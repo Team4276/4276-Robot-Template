@@ -1,14 +1,15 @@
 package frc.lib.bases;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.wpilib.units.measure.Angle;
+import org.wpilib.units.measure.AngularVelocity;
+import org.wpilib.units.measure.Current;
+import org.wpilib.units.measure.Voltage;
+import org.wpilib.driverstation.DriverStation;
+import org.wpilib.framework.RobotBase;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.SubsystemBase;
 import frc.lib.io.MotorIO;
 import frc.lib.io.MotorIO.Setpoint;
 import frc.lib.util.LoggedTracer;
@@ -69,7 +70,7 @@ public class MotorSubsystem<IO extends MotorIO> extends SubsystemBase {
 	}
 
 	public void tuning(String name) {
-		if (DriverStation.isDisabled() && tuningMode == true) {
+		if (RobotBase.isDisabled() && tuningMode == true) {
 
 			kP0 = new TunableNumber(name + "kP0", io.getMotorIOConfig().Slot0.kP);
 			kI0 = new TunableNumber(name + "kI0", io.getMotorIOConfig().Slot0.kI);
@@ -151,7 +152,7 @@ public class MotorSubsystem<IO extends MotorIO> extends SubsystemBase {
 		io.updateInputs();
 		Logger.processInputs(name, io.inputs);
 		outputTelemetry();
-		if (DriverStation.isDisabled() && tuningMode == true) {
+		if (RobotBase.isDisabled() && tuningMode == true) {
 			if (kP0.hasChanged()
 					|| kI0.hasChanged()
 					|| kD0.hasChanged()

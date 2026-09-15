@@ -1,10 +1,10 @@
 package frc.lib.io.vision;
 
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.Vector;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.numbers.N3;
+import org.wpilib.math.linalg.VecBuilder;
+import org.wpilib.math.linalg.Vector;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Pose3d;
+import org.wpilib.math.numbers.N3;
 import frc.lib.util.vision.CameraPipeline;
 import frc.lib.util.vision.VisionEstimate;
 
@@ -14,10 +14,6 @@ import java.util.Optional;
 import org.littletonrobotics.junction.AutoLog;
 
 public abstract class VisionIO {
-
-	protected final CameraIOConfig config;
-	public final VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
-	protected CameraPipeline pipeline = CameraPipeline.getDefault();
 
 	@AutoLog
 	public static class VisionIOInputs {
@@ -36,6 +32,10 @@ public abstract class VisionIO {
 		public double[] estimateTimestamp = new double[0];
 		public int[][] estimateTagIds = new int[0][0];
 	}
+	
+	protected final CameraIOConfig config;
+	public final VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
+	protected CameraPipeline pipeline = CameraPipeline.getDefault();
 
 	public static class CameraIOConfig {
 		public String name = null;

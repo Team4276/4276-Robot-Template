@@ -1,36 +1,38 @@
 package frc.lib.util;
 
-import static edu.wpi.first.units.Units.Radians;
-import static edu.wpi.first.units.Units.Seconds;
+import static org.wpilib.units.Units.Radians;
+import static org.wpilib.units.Units.Seconds;
 
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.Pair;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
-import edu.wpi.first.math.interpolation.Interpolator;
-import edu.wpi.first.math.interpolation.InverseInterpolator;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.Trajectory.State;
-import edu.wpi.first.units.AngleUnit;
-import edu.wpi.first.units.BaseUnits;
-import edu.wpi.first.units.DistanceUnit;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Unit;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.units.measure.Time;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Subsystem;
+import org.wpilib.math.util.MathUtil;
+import org.wpilib.math.util.Pair;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Transform2d;
+import org.wpilib.math.geometry.Translation2d;
+import org.wpilib.math.geometry.Translation3d;
+import org.wpilib.math.interpolation.InterpolatingTreeMap;
+import org.wpilib.math.interpolation.Interpolator;
+import org.wpilib.math.interpolation.InverseInterpolator;
+import org.wpilib.math.kinematics.ChassisVelocities;
+import org.wpilib.math.trajectory.Trajectory;
+import org.wpilib.math.trajectory.Trajectory.State;
+import org.wpilib.units.AngleUnit;
+import org.wpilib.units.BaseUnits;
+import org.wpilib.units.DistanceUnit;
+import org.wpilib.units.Measure;
+import org.wpilib.units.Unit;
+import org.wpilib.units.Units;
+import org.wpilib.units.measure.Angle;
+import org.wpilib.units.measure.AngularVelocity;
+import org.wpilib.units.measure.Distance;
+import org.wpilib.units.measure.LinearVelocity;
+import org.wpilib.units.measure.Time;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.CommandScheduler;
+import org.wpilib.command2.Subsystem;
+import org.wpilib.driverstation.internal.DriverStationBackend;
+
 // import frc.lib.util.axis3d.TranslationAxis3d;
 // import frc.lib.util.builder.Transform3dObjectBuilder;
 import java.util.ArrayList;
@@ -131,15 +133,15 @@ public class Util {
 				&& epsilonEquals(a.getY(), b.getY(), epsilon.in(Units.Meters));
 	}
 
-	public static boolean epsilonEquals(ChassisSpeeds a, ChassisSpeeds b) {
-		return epsilonEquals(a.vxMetersPerSecond, b.vxMetersPerSecond)
-				&& epsilonEquals(a.vyMetersPerSecond, b.vyMetersPerSecond)
-				&& epsilonEquals(a.omegaRadiansPerSecond, b.omegaRadiansPerSecond);
+	public static boolean epsilonEquals(ChassisVelocities a, ChassisVelocities b) {
+		return epsilonEquals(a.vx, b.vx)
+				&& epsilonEquals(a.vy, b.vy)
+				&& epsilonEquals(a.omega, b.omega);
 	}
 
-	public static boolean epsilonEquals(ChassisSpeeds a, ChassisSpeeds b, double linearVelocityEpsilon) {
-		return epsilonEquals(a.vxMetersPerSecond, b.vxMetersPerSecond, linearVelocityEpsilon)
-				&& epsilonEquals(a.vyMetersPerSecond, b.vyMetersPerSecond, linearVelocityEpsilon);
+	public static boolean epsilonEquals(ChassisVelocities a, ChassisVelocities b, double linearVelocityEpsilon) {
+		return epsilonEquals(a.vx, b.vx, linearVelocityEpsilon)
+				&& epsilonEquals(a.vy, b.vy, linearVelocityEpsilon);
 	}
 
 	public static boolean safeEqualsCheck(Object a, Object b) {
@@ -409,12 +411,12 @@ public class Util {
 		}
 
 		public Pose2dTimeInterpolable(Trajectory trajwithTan, Rotation2d startHeading, Rotation2d endHeading) {
-			double totalTimeSecpnods = trajwithTan.getTotalTimeSeconds();
+			double totalTimeSecpnods = trajwithTan.getTotalTime();
 			for (State state : trajwithTan.getStates()) {
-				Rotation2d poseRotation = startHeading.interpolate(endHeading, state.timeSeconds / totalTimeSecpnods);
+				Rotation2d poseRotation = startHeading.interpolate(endHeading, state.time / totalTimeSecpnods);
 				poseList.add(new Pair<>(
-						new Pose2d(state.poseMeters.getTranslation(), poseRotation),
-						Units.Seconds.of(state.timeSeconds)));
+						new Pose2d(state.pose.getTranslation(), poseRotation),
+						Units.Seconds.of(state.time)));
 			}
 			Logger.recordOutput("Auto Align Traj/Number Of Trajectory States", poseList.size());
 		}
@@ -520,7 +522,7 @@ public class Util {
 			SwerveDriveState driveState, Translation2d targetPose, Time time) {
 
 		Pose2d drivePose = driveState.Pose;
-		ChassisSpeeds driveSpeeds = driveState.Speeds;
+		ChassisVelocities driveSpeeds = driveState.Velocity;
 
 		Translation2d distanceTranslation = driveState.Pose.getTranslation().minus(targetPose);
 
@@ -530,10 +532,10 @@ public class Util {
 		double t = time.in(Seconds);
 
 		// Convert robot-relative speeds → field-relative
-		ChassisSpeeds fieldSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(driveSpeeds, drivePose.getRotation());
+		ChassisVelocities fieldSpeeds = driveSpeeds.toFieldRelative(drivePose.getRotation());
 
-		double vrx = fieldSpeeds.vxMetersPerSecond;
-		double vry = fieldSpeeds.vyMetersPerSecond;
+		double vrx = fieldSpeeds.vx;
+		double vry = fieldSpeeds.vy;
 
 		// Lead velocity vector (field-relative)
 		double vsx = dx / t - vrx;

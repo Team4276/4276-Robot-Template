@@ -1,8 +1,8 @@
 package frc.lib.io;
 
-import static edu.wpi.first.units.Units.Percent;
-import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static org.wpilib.units.Units.Percent;
+import static org.wpilib.units.Units.Rotations;
+import static org.wpilib.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.revrobotics.PersistMode;
@@ -10,20 +10,20 @@ import com.revrobotics.REVLibError;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkLowLevel.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-import edu.wpi.first.units.AngleUnit;
-import edu.wpi.first.units.TimeUnit;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Dimensionless;
-import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.wpilib.units.AngleUnit;
+import org.wpilib.units.TimeUnit;
+import org.wpilib.units.Units;
+import org.wpilib.units.measure.Angle;
+import org.wpilib.units.measure.AngularVelocity;
+import org.wpilib.units.measure.Dimensionless;
+import org.wpilib.units.measure.Voltage;
+import org.wpilib.system.Timer;
+import org.wpilib.smartdashboard.SmartDashboard;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -62,21 +62,21 @@ public class MotorIOSparkMax extends MotorIO {
 		inputs.setPointType = Mode.IDLE;
 		inputs.setPointValueAsDouble = 0.0;
 
-		inputs.position[0] = main.getEncoder().getPosition();
-		inputs.velocity[0] = main.getEncoder().getVelocity();
-		inputs.statorCurrent[0] = main.getOutputCurrent();
-		inputs.supplyCurrent[0] = main.getOutputCurrent();
-		inputs.motorVoltage[0] = main.getBusVoltage() * main.getAppliedOutput();
-		inputs.motorTemperature[0] = main.getMotorTemperature();
+		inputs.position[0] = main.getEncoder().getPosition().get();
+		inputs.velocity[0] = main.getEncoder().getVelocity().get();
+		inputs.statorCurrent[0] = main.getOutputCurrent().get();
+		inputs.supplyCurrent[0] = main.getOutputCurrent().get();
+		inputs.motorVoltage[0] = main.getBusVoltage().get() * main.getAppliedOutput().get();
+		inputs.motorTemperature[0] = main.getMotorTemperature().get();
 		inputs.acceleration[0] = 0.0;
 
 		for (int i = 0; i < followers.length; i++) {
-			inputs.position[i + 1] = followers[i].getEncoder().getPosition();
-			inputs.velocity[i + 1] = followers[i].getEncoder().getVelocity();
-			inputs.statorCurrent[i + 1] = followers[i].getOutputCurrent();
-			inputs.supplyCurrent[i + 1] = followers[i].getOutputCurrent();
-			inputs.motorVoltage[i + 1] = followers[i].getBusVoltage() * followers[i].getAppliedOutput();
-			inputs.motorTemperature[i + 1] = followers[i].getMotorTemperature();
+			inputs.position[i + 1] = followers[i].getEncoder().getPosition().get();
+			inputs.velocity[i + 1] = followers[i].getEncoder().getVelocity().get();
+			inputs.statorCurrent[i + 1] = followers[i].getOutputCurrent().get();
+			inputs.supplyCurrent[i + 1] = followers[i].getOutputCurrent().get();
+			inputs.motorVoltage[i + 1] = followers[i].getBusVoltage().get() * followers[i].getAppliedOutput().get();
+			inputs.motorTemperature[i + 1] = followers[i].getMotorTemperature().get();
 			inputs.acceleration[i + 1] = 0.0;
 		}
 
@@ -131,7 +131,7 @@ public class MotorIOSparkMax extends MotorIO {
 
 	@Override
 	protected void setDutyCycleSetpoint(Dimensionless percent) {
-		main.set(percent.in(Percent));
+		main.setThrottle(percent.in(Percent));
 	}
 
 	@Override
@@ -180,7 +180,7 @@ public class MotorIOSparkMax extends MotorIO {
 	}
 
 	private void setIdleMode(SparkMax spark, IdleMode idleMode) {
-		SmartDashboard.putNumber("SPARK MAX NEUTRAL MODE SET!!", Timer.getFPGATimestamp());
+		SmartDashboard.putNumber("SPARK MAX NEUTRAL MODE SET!!", Timer.getMonotonicTimestamp());
 		threadPoolExecutor.submit(() -> {
 			main.configure(config.idleMode(idleMode), ResetMode.kNoResetSafeParameters,
 					PersistMode.kNoPersistParameters);
@@ -254,12 +254,12 @@ public class MotorIOSparkMax extends MotorIO {
 	 */
 	public MotorIOSparkMax(MotorIOSparkMaxConfig config) {
 		super(config.unit, config.time, config.followerIDs.length);
-		main = new SparkMax(config.mainID, MotorType.kBrushless);
+		main = new SparkMax(0, config.mainID, MotorType.kBrushless); // TODO: add buses
 		setMainConfig(config.mainConfig);
 
 		followers = new SparkMax[config.followerIDs.length];
 		for (int i = 0; i < config.followerIDs.length; i++) {
-			followers[i] = new SparkMax(config.followerIDs[i], MotorType.kBrushless);
+			followers[i] = new SparkMax(0, config.followerIDs[i], MotorType.kBrushless);
 			followerConfig.follow(main, config.followerInverted[i]);
 			applyConfig(followers[i], followerConfig);
 		}

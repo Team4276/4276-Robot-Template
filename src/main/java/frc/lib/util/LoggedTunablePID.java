@@ -1,6 +1,6 @@
 package frc.lib.util;
 
-import edu.wpi.first.math.controller.PIDController;
+import org.wpilib.math.controller.PIDController;
 import frc.robot.RobotConstants;
 
 public class LoggedTunablePID extends PIDController {

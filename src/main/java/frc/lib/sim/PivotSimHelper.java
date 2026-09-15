@@ -1,9 +1,8 @@
 package frc.lib.sim;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Voltage;
+import org.wpilib.units.Units;
+import org.wpilib.units.measure.AngularVelocity;
+import org.wpilib.units.measure.Voltage;
 
 /**
  * Hood-specific pivot simulation that includes strong static and kinetic
@@ -32,7 +31,7 @@ public class PivotSimHelper extends PivotSim {
 	@Override
 	public void setVoltage(Voltage voltage) {
 		double requestedVolts = voltage.in(Units.Volts);
-		double velocityRadPerSec = sim.getVelocityRadPerSec();
+		double velocityRadPerSec = sim.getVelocity();
 		double absVelocity = Math.abs(velocityRadPerSec);
 		double absRequestedVolts = Math.abs(requestedVolts);
 
@@ -53,6 +52,6 @@ public class PivotSimHelper extends PivotSim {
 				+ velocityRadPerSec * viscousFrictionVoltsPerRadPerSec;
 		double netVolts = requestedVolts - frictionVolts;
 
-		sim.setInputVoltage(MathUtil.clamp(netVolts, -12.0, 12.0));
+		sim.setInputVoltage(Math.clamp(netVolts, -12.0, 12.0));
 	}
 }

@@ -1,17 +1,17 @@
 package frc.robot.controlboard;
 
-import static edu.wpi.first.units.Units.Milliseconds;
-import static edu.wpi.first.units.Units.Volts;
+import static org.wpilib.units.Units.Milliseconds;
+import static org.wpilib.units.Units.Volts;
 
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Time;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import org.wpilib.units.Units;
+import org.wpilib.units.measure.Time;
+import org.wpilib.driverstation.internal.DriverStationBackend;
+import org.wpilib.driverstation.GenericHID.RumbleType;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.SubsystemBase;
+import org.wpilib.command2.button.CommandGenericHID;
+import org.wpilib.command2.button.CommandNiDsXboxController;
 import frc.lib.hid.ViXController;
 import frc.lib.io.MotorIO.Mode;
 import frc.lib.io.MotorIO.Setpoint;
@@ -52,7 +52,7 @@ public class ControlBoard extends SubsystemBase {
 		// tuningControls();
 
 		if (RobotConstants.getMode() == RobotConstants.Mode.SIM) {
-			DriverStation.silenceJoystickConnectionWarning(true);
+			DriverStationBackend.silenceJoystickConnectionWarning(true);
 		}
 	}
 
@@ -94,7 +94,7 @@ public class ControlBoard extends SubsystemBase {
 		return rumbleCommand(mDriver, duration);
 	}
 
-	public Command rumbleCommand(CommandXboxController controller, Time duration) {
+	public Command rumbleCommand(CommandNiDsXboxController controller, Time duration) {
 		return Commands.sequence(
 				Commands.runOnce(() -> {
 					setRumble(controller, true);
@@ -114,7 +114,8 @@ public class ControlBoard extends SubsystemBase {
 		setRumble(mDriver, on);
 	}
 
-	public void setRumble(CommandXboxController controller, boolean on) {
-		controller.getHID().setRumble(RumbleType.kBothRumble, on ? 1.0 : 0.0);
+	public void setRumble(CommandNiDsXboxController controller, boolean on) {
+		controller.getHID().setRumble(RumbleType.RIGHT_RUMBLE, on ? 1.0 : 0.0);
+		controller.getHID().setRumble(RumbleType.LEFT_RUMBLE, on ? 1.0 : 0.0);
 	}
 }
