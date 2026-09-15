@@ -22,7 +22,7 @@ import frc.lib.util.LoggedTracer;
 import frc.lib.util.vision.CameraPipeline;
 import frc.lib.util.vision.VisionEstimate;
 import frc.robot.game.FieldLayout;
-import frc.robot.subsystems.drive.Drive;
+// import frc.robot.subsystems.drive.Drive;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -64,18 +64,19 @@ public abstract class VisionSubsystem extends SubsystemBase {
     }
 
     public void applyVisionEstimate(VisionIO camera, VisionEstimate estimate) {
-        Drive.mInstance.addVisionMeasurement(estimate);
+        // Drive.mInstance.addVisionMeasurement(estimate);
 
         if (estimate.getPose() != lastPose) {
-            if (Drive.mInstance
-                    .getPose()
-                    .getTranslation()
-                    .getDistance(estimate.getPose().getTranslation()) < agreedTranslationUpdateEpsilon
-                            .in(Units.Meters)) {
-                numPoseStableUpdates++;
-            } else {
-                numPoseStableUpdates = 0;
-            }
+            // if (Drive.mInstance
+            // .getPose()
+            // .getTranslation()
+            // .getDistance(estimate.getPose().getTranslation()) <
+            // agreedTranslationUpdateEpsilon
+            // .in(Units.Meters)) {
+            // numPoseStableUpdates++;
+            // } else {
+            // numPoseStableUpdates = 0;
+            // }
         }
         lastEstimate = Optional.of(estimate);
         lastPose = estimate.getPose();

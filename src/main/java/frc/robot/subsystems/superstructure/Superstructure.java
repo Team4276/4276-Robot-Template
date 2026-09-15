@@ -12,7 +12,14 @@ public class Superstructure extends SubsystemBase {
 
     @Override
     public void periodic() {
+    }
 
+    public Command setOn() {
+        return ExampleSubsystem.mInstance.setpointCommand(ExampleSubsystem.EXAMPLE_SETPOINT);
+    }
+
+    public Command setOff() {
+        return ExampleSubsystem.mInstance.setpointCommand(ExampleSubsystem.IDLE);
     }
 
     public Command exampleCommand() { // TODO: check if works on button hold

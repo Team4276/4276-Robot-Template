@@ -18,8 +18,8 @@ import frc.lib.io.MotorIO.Setpoint;
 import frc.lib.util.ControllerUtil;
 import frc.robot.Robot;
 import frc.robot.RobotConstants;
-import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.drive.DriveConstants;
+// import frc.robot.subsystems.drive.Drive;
+// import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.examplesubsystem.ExampleSubsystem;
 import frc.robot.subsystems.superstructure.Superstructure;
 
@@ -35,13 +35,13 @@ public class ControlBoard extends SubsystemBase {
 
 	public void configureBindings() {
 
-		Drive.mInstance.setDefaultCommand(Drive.mInstance.drive(DriveConstants.kTeleopRequestUpdater));
+		// Drive.mInstance.setDefaultCommand(Drive.mInstance.drive(DriveConstants.kTeleopRequestUpdater));
 
-		mDriver.back()
-				.onTrue(Commands.runOnce(
-						() -> Drive.mInstance.zeroGyro(),
-						Drive.mInstance)
-						.ignoringDisable(true));
+		// mDriver.back()
+		// .onTrue(Commands.runOnce(
+		// () -> Drive.mInstance.zeroGyro(),
+		// Drive.mInstance)
+		// .ignoringDisable(true));
 
 		mDriver.start()
 				.onTrue(Commands.runOnce(() -> Robot.resetPoseForAuto = true).ignoringDisable(true));
@@ -57,11 +57,16 @@ public class ControlBoard extends SubsystemBase {
 	}
 
 	public void driverControls() {
-		mKeyboard0.button(1)
-				.onTrue(Superstructure.mInstance.exampleCommand().onlyWhile(mKeyboard0.button(1)));
-		mKeyboard0.button(2)
-				.onTrue(Superstructure.mInstance.testCommand().onlyWhile(mKeyboard0.button(2)));
+		// mKeyboard0.button(1)
+		// .onTrue(Superstructure.mInstance.exampleCommand().onlyWhile(mKeyboard0.button(1)));
+		// mKeyboard0.button(2)
+		// .onTrue(Superstructure.mInstance.testCommand().onlyWhile(mKeyboard0.button(2)));
 
+		mDriver.a()
+				.onTrue(Superstructure.mInstance.setOn());
+
+		mDriver.b()
+				.onTrue(Superstructure.mInstance.setOff());
 	}
 
 	public void bringupControls() {

@@ -10,7 +10,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.game.FieldLayout;
-import frc.robot.subsystems.drive.Drive;
+// import frc.robot.subsystems.drive.Drive;
 import java.util.Optional;
 
 import org.littletonrobotics.junction.Logger;
@@ -58,18 +58,19 @@ public class VisionEstimate {
     }
 
     public Distance getAverageDistance() {
-        return averageDistance.orElseGet(() -> {
-            Distance average = BaseUnits.DistanceUnit.zero();
-            if (tags.length > 0) {
-                for (AprilTag tag : tags)
-                    average = average.plus(Meters.of(tag.pose
-                            .getTranslation()
-                            .toTranslation2d()
-                            .getDistance(Drive.mInstance.getPose().getTranslation())));
-                average = average.div(tags.length);
-            }
-            return average;
-        });
+        // return averageDistance.orElseGet(() -> {
+        // Distance average = BaseUnits.DistanceUnit.zero();
+        // if (tags.length > 0) {
+        // for (AprilTag tag : tags)
+        // average = average.plus(Meters.of(tag.pose
+        // .getTranslation()
+        // .toTranslation2d()
+        // .getDistance(Drive.mInstance.getPose().getTranslation())));
+        // average = average.div(tags.length);
+        // }
+        // return average;
+        // });
+        return Distance.ofBaseUnits(0, Meters);
     }
 
     public void log(String key) {

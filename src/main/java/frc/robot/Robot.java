@@ -18,6 +18,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import choreo.auto.AutoFactory;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.Timer;
@@ -27,7 +28,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.util.LoggedTracer;
 import frc.robot.auto.AutoSelector;
 import frc.robot.controlboard.ControlBoard;
-import frc.robot.subsystems.drive.Drive;
+// import frc.robot.subsystems.drive.Drive;
 
 public class Robot extends LoggedRobot {
     private AutoFactory mAutoFactory;
@@ -63,12 +64,12 @@ public class Robot extends LoggedRobot {
 
         Logger.start();
 
-        mAutoFactory = new AutoFactory(
-                Drive.mInstance::getPose,
-                Drive.mInstance::resetPose,
-                Drive.mInstance::followChoreoTrajectory,
-                true,
-                Drive.mInstance);
+        // mAutoFactory = new AutoFactory(
+        // Drive.mInstance::getPose,
+        // Drive.mInstance::resetPose,
+        // Drive.mInstance::followChoreoTrajectory,
+        // true,
+        // Drive.mInstance);
 
         mAutoSelector = new AutoSelector(mAutoFactory);
 
@@ -89,7 +90,7 @@ public class Robot extends LoggedRobot {
         CommandScheduler.getInstance()
                 .onCommandInterrupt((Command command) -> logCommandFunction.accept(command, false));
 
-        CommandScheduler.getInstance().schedule(mAutoFactory.warmupCmd());
+        // CommandScheduler.getInstance().schedule(mAutoFactory.warmupCmd());
 
         ControlBoard.mInstance.configureBindings();
 
@@ -120,7 +121,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void disabledPeriodic() {
         if (resetPoseForAuto) {
-            Drive.mInstance.resetPose(mAutoSelector.getSelectedAutoStartingPose());
+            // Drive.mInstance.resetPose(mAutoSelector.getSelectedAutoStartingPose());
             resetPoseForAuto = false;
         }
     }

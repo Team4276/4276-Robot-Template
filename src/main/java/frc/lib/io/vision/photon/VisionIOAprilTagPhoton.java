@@ -8,7 +8,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.Timer;
 import frc.lib.util.vision.VisionEstimate;
 import frc.robot.game.FieldLayout;
-import frc.robot.subsystems.drive.Drive;
+// import frc.robot.subsystems.drive.Drive;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -126,7 +126,7 @@ public class VisionIOAprilTagPhoton extends VisionIOPhotonCamera {
 			}
 		});
 
-		estimator.addHeadingData(
-				Timer.getFPGATimestamp(), Drive.mInstance.getPose().getRotation());
+		// estimator.addHeadingData(
+		// Timer.getFPGATimestamp(), Drive.mInstance.getPose().getRotation());
 	}
 }
