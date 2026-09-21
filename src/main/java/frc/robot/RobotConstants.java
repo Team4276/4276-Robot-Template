@@ -35,6 +35,7 @@ public class RobotConstants {
 
     public static final CANBus canivore1 = new CANBus("canivore1");
     public static final CANBus rio = new CANBus();
+    public static final CANBus systemCore = CANBus.systemcore(1);
 
     public static final boolean isTuning = true;
 
