@@ -22,8 +22,9 @@ import org.wpilib.units.measure.Angle;
 import org.wpilib.units.measure.AngularVelocity;
 import org.wpilib.units.measure.Dimensionless;
 import org.wpilib.units.measure.Voltage;
+import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.system.Timer;
-import org.wpilib.smartdashboard.SmartDashboard;
+// import org.wpilib.smartdashboard.SmartDashboard;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -180,7 +181,7 @@ public class MotorIOSparkFlex extends MotorIO {
 	}
 
 	private void setIdleMode(SparkFlex spark, IdleMode idleMode) {
-		SmartDashboard.putNumber("SPARK FLEX NEUTRAL MODE SET!!", Timer.getMonotonicTimestamp());
+		// SmartDashboard.putNumber("SPARK FLEX NEUTRAL MODE SET!!", Timer.getMonotonicTimestamp());
 		threadPoolExecutor.submit(() -> {
 			main.configure(config.idleMode(idleMode), ResetMode.kNoResetSafeParameters,
 					PersistMode.kNoPersistParameters);
@@ -254,12 +255,12 @@ public class MotorIOSparkFlex extends MotorIO {
 	 */
 	public MotorIOSparkFlex(MotorIOSparkFlexConfig config) {
 		super(config.unit, config.time, config.followerIDs.length);
-		main = new SparkFlex(0, config.mainID, MotorType.kBrushless);
+		main = new SparkFlex(config.canPort, config.mainID, MotorType.kBrushless);
 		setMainConfig(config.mainConfig);
 
 		followers = new SparkFlex[config.followerIDs.length];
 		for (int i = 0; i < config.followerIDs.length; i++) {
-			followers[i] = new SparkFlex(0, config.followerIDs[i], MotorType.kBrushless);
+			followers[i] = new SparkFlex(config.canPort, config.followerIDs[i], MotorType.kBrushless);
 			followerConfig.follow(main, config.followerInverted[i]);
 			applyConfig(followers[i], followerConfig);
 		}
@@ -272,6 +273,7 @@ public class MotorIOSparkFlex extends MotorIO {
 	public static class MotorIOSparkFlexConfig {
 		public AngleUnit unit = Units.Rotations;
 		public TimeUnit time = Units.Seconds;
+		public CANPort canPort = CANPort.CAN_S0;
 		public int mainID = -1;
 		public SparkFlexConfig mainConfig = new SparkFlexConfig();
 		public int[] followerIDs = new int[0];

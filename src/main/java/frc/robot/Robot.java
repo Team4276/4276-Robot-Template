@@ -22,7 +22,6 @@ import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.system.RobotController;
 import org.wpilib.system.Threads;
 import org.wpilib.system.Timer;
-import org.wpilib.smartdashboard.SmartDashboard;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
 import frc.lib.util.LoggedTracer;
@@ -94,7 +93,7 @@ public class Robot extends LoggedRobot {
 
         ControlBoard.mInstance.configureBindings();
 
-        RobotController.setBrownoutVoltage(Volts.of(5.5));
+        // RobotController.setBrownoutVoltages(Volts.of(5.5));
 
         // SmartDashboard.putData("Auto Selector", mAutoSelector.getAutoChooser());
     }

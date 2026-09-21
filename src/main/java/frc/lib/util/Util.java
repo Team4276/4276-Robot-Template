@@ -5,7 +5,7 @@ import static org.wpilib.units.Units.Seconds;
 
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import org.wpilib.math.util.MathUtil;
-import org.wpilib.math.util.Pair;
+import org.wpilib.util.Pair;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Transform2d;
@@ -16,7 +16,7 @@ import org.wpilib.math.interpolation.Interpolator;
 import org.wpilib.math.interpolation.InverseInterpolator;
 import org.wpilib.math.kinematics.ChassisVelocities;
 import org.wpilib.math.trajectory.Trajectory;
-import org.wpilib.math.trajectory.Trajectory.State;
+// import org.wpilib.math.trajectory.Trajectory.State;
 import org.wpilib.units.AngleUnit;
 import org.wpilib.units.BaseUnits;
 import org.wpilib.units.DistanceUnit;
@@ -343,84 +343,84 @@ public class Util {
 		return Math.hypot(translation.getX(), translation.getY());
 	}
 
-	public static class Pose2dTimeInterpolable {
-		private List<Pair<Pose2d, Time>> poseList = new ArrayList<>();
+	// public static class Pose2dTimeInterpolable {
+	// 	private List<Pair<Pose2d, Time>> poseList = new ArrayList<>();
 
-		public Time getTimeFromPose(Pose2d pose) {
-			Pair<Pose2d, Time> prevState = poseList.get(0);
-			Pair<Pose2d, Time> nextState = poseList.get(0);
-			for (int i = 0; i < poseList.size() - 1; i++) {
-				if (i >= poseList.size() - 2) {
-					return poseList.get(poseList.size() - 1).getSecond();
-				}
-				prevState = poseList.get(i);
-				nextState = poseList.get(i + 2);
-				if (prevState.getFirst().getTranslation().getDistance(pose.getTranslation()) < nextState.getFirst()
-						.getTranslation().getDistance(pose.getTranslation())) {
-					nextState = poseList.get(i + 1);
-					break;
-				}
-			}
+	// 	public Time getTimeFromPose(Pose2d pose) {
+	// 		Pair<Pose2d, Time> prevState = poseList.get(0);
+	// 		Pair<Pose2d, Time> nextState = poseList.get(0);
+	// 		for (int i = 0; i < poseList.size() - 1; i++) {
+	// 			if (i >= poseList.size() - 2) {
+	// 				return poseList.get(poseList.size() - 1).getSecond();
+	// 			}
+	// 			prevState = poseList.get(i);
+	// 			nextState = poseList.get(i + 2);
+	// 			if (prevState.getFirst().getTranslation().getDistance(pose.getTranslation()) < nextState.getFirst()
+	// 					.getTranslation().getDistance(pose.getTranslation())) {
+	// 				nextState = poseList.get(i + 1);
+	// 				break;
+	// 			}
+	// 		}
 
-			double distanceToPrevPose = prevState.getFirst().getTranslation().getDistance(pose.getTranslation());
-			double distanceToNextPose = nextState.getFirst().getTranslation().getDistance(pose.getTranslation());
-			double percentToNextPose = (prevState
-					.getFirst()
-					.getTranslation()
-					.getDistance(nextState.getFirst().getTranslation())
-					- distanceToNextPose)
-					/ (distanceToPrevPose + distanceToNextPose);
+	// 		double distanceToPrevPose = prevState.getFirst().getTranslation().getDistance(pose.getTranslation());
+	// 		double distanceToNextPose = nextState.getFirst().getTranslation().getDistance(pose.getTranslation());
+	// 		double percentToNextPose = (prevState
+	// 				.getFirst()
+	// 				.getTranslation()
+	// 				.getDistance(nextState.getFirst().getTranslation())
+	// 				- distanceToNextPose)
+	// 				/ (distanceToPrevPose + distanceToNextPose);
 
-			Time timeDelta = nextState.getSecond().minus(prevState.getSecond());
-			Time timeAtPose = prevState.getSecond().plus(timeDelta.times(percentToNextPose));
-			return timeAtPose;
-		}
+	// 		Time timeDelta = nextState.getSecond().minus(prevState.getSecond());
+	// 		Time timeAtPose = prevState.getSecond().plus(timeDelta.times(percentToNextPose));
+	// 		return timeAtPose;
+	// 	}
 
-		public Pose2d getPoseFromTime(Time time) {
-			if (time.gte(poseList.get(poseList.size() - 1).getSecond())) {
-				return poseList.get(poseList.size() - 1).getFirst();
-			} else if (time.lte(poseList.get(0).getSecond())) {
-				return poseList.get(0).getFirst();
-			}
+	// 	public Pose2d getPoseFromTime(Time time) {
+	// 		if (time.gte(poseList.get(poseList.size() - 1).getSecond())) {
+	// 			return poseList.get(poseList.size() - 1).getFirst();
+	// 		} else if (time.lte(poseList.get(0).getSecond())) {
+	// 			return poseList.get(0).getFirst();
+	// 		}
 
-			Pair<Pose2d, Time> prevState = poseList.get(0);
-			Pair<Pose2d, Time> nextState = poseList.get(0);
-			;
+	// 		Pair<Pose2d, Time> prevState = poseList.get(0);
+	// 		Pair<Pose2d, Time> nextState = poseList.get(0);
+	// 		;
 
-			for (int i = 1; i < poseList.size(); i++) {
-				nextState = poseList.get(i);
-				if (nextState.getSecond().gte(time)) {
-					prevState = poseList.get(i - 1);
-					break;
-				}
-			}
+	// 		for (int i = 1; i < poseList.size(); i++) {
+	// 			nextState = poseList.get(i);
+	// 			if (nextState.getSecond().gte(time)) {
+	// 				prevState = poseList.get(i - 1);
+	// 				break;
+	// 			}
+	// 		}
 
-			Time timeDelta = nextState.getSecond().plus(prevState.getSecond());
-			double percentIntoDelta = time.minus(prevState.getSecond()).in(BaseUnits.TimeUnit)
-					/ (timeDelta.in(BaseUnits.TimeUnit));
-			// SmartDashboard.putNumber("Auto Align Traj/Percent As Delta",
-			// percentIntoDelta);
-			Transform2d prevToTimePose = nextState.getFirst().minus(prevState.getFirst()).times(percentIntoDelta);
-			return prevState.getFirst().plus(prevToTimePose);
-		}
+	// 		Time timeDelta = nextState.getSecond().plus(prevState.getSecond());
+	// 		double percentIntoDelta = time.minus(prevState.getSecond()).in(BaseUnits.TimeUnit)
+	// 				/ (timeDelta.in(BaseUnits.TimeUnit));
+	// 		// SmartDashboard.putNumber("Auto Align Traj/Percent As Delta",
+	// 		// percentIntoDelta);
+	// 		Transform2d prevToTimePose = nextState.getFirst().minus(prevState.getFirst()).times(percentIntoDelta);
+	// 		return prevState.getFirst().plus(prevToTimePose);
+	// 	}
 
-		public void clearStatesBeforeTime(Time time) {
-			while (poseList.size() > 1 && poseList.get(0).getSecond().lt(time)) {
-				poseList.remove(0);
-			}
-		}
+	// 	public void clearStatesBeforeTime(Time time) {
+	// 		while (poseList.size() > 1 && poseList.get(0).getSecond().lt(time)) {
+	// 			poseList.remove(0);
+	// 		}
+	// 	}
 
-		public Pose2dTimeInterpolable(Trajectory trajwithTan, Rotation2d startHeading, Rotation2d endHeading) {
-			double totalTimeSecpnods = trajwithTan.getTotalTime();
-			for (State state : trajwithTan.getStates()) {
-				Rotation2d poseRotation = startHeading.interpolate(endHeading, state.time / totalTimeSecpnods);
-				poseList.add(new Pair<>(
-						new Pose2d(state.pose.getTranslation(), poseRotation),
-						Units.Seconds.of(state.time)));
-			}
-			Logger.recordOutput("Auto Align Traj/Number Of Trajectory States", poseList.size());
-		}
-	}
+	// 	public Pose2dTimeInterpolable(Trajectory trajwithTan, Rotation2d startHeading, Rotation2d endHeading) {
+	// 		double totalTimeSecpnods = trajwithTan.getTotalTime();
+	// 		for (State state : trajwithTan.getStates()) {
+	// 			Rotation2d poseRotation = startHeading.interpolate(endHeading, state.time / totalTimeSecpnods);
+	// 			poseList.add(new Pair<>(
+	// 					new Pose2d(state.pose.getTranslation(), poseRotation),
+	// 					Units.Seconds.of(state.time)));
+	// 		}
+	// 		Logger.recordOutput("Auto Align Traj/Number Of Trajectory States", poseList.size());
+	// 	}
+	// }
 
 	/**
 	 * Calculates the intersection points of two circles.
@@ -488,7 +488,7 @@ public class Util {
 	// public static Command smartDashCommand(String message) {
 	// return Commands.defer(
 	// () -> Commands.runOnce(() -> SmartDashboard.putNumber(message,
-	// Timer.getFPGATimestamp())),
+	// Timer.getTimestamp())),
 	// getEmptySubsystemSet());
 	// }
 

@@ -3,7 +3,7 @@ package frc.robot;
 import com.ctre.phoenix6.CANBus;
 
 public enum Ports {
-    EXAMPLE_SUBSYSTEM(5, RobotConstants.rio);
+    EXAMPLE_SUBSYSTEM(1, RobotConstants.S1);
 
     public final int id;
     public final CANBus bus;

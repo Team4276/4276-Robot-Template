@@ -52,7 +52,7 @@ public class ControlBoard extends SubsystemBase {
 		// tuningControls();
 
 		if (RobotConstants.getMode() == RobotConstants.Mode.SIM) {
-			DriverStationBackend.silenceJoystickConnectionWarning(true);
+			DriverStationBackend.silenceJoystickConnectionAlert(true);
 		}
 	}
 

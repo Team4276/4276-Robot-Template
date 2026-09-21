@@ -6,14 +6,14 @@ import org.wpilib.math.geometry.Translation2d;
 import org.wpilib.units.measure.Distance;
 import org.wpilib.driverstation.Alliance;
 import org.wpilib.driverstation.internal.DriverStationBackend;
-import org.wpilib.smartdashboard.SmartDashboard;
+// import org.wpilib.smartdashboard.SmartDashboard;
 import frc.robot.game.FieldLayout;
 import frc.robot.RobotConstants;
 import frc.robot.RobotConstants.Mode;
 
 public class AllianceFlipUtil {
     static {
-        SmartDashboard.putBoolean("Sim/OverrideFlip", false);
+        // SmartDashboard.putBoolean("Sim/OverrideFlip", false);
     }
 
     private static boolean overrideFlip = true;
@@ -31,7 +31,7 @@ public class AllianceFlipUtil {
     }
 
     public static Rotation2d flip(Rotation2d rotation) {
-        return rotation.rotateBy(Rotation2d.kPi);
+        return rotation.rotateBy(Rotation2d.PI);
     }
 
     public static Pose2d flip(Pose2d pose) {
@@ -72,7 +72,7 @@ public class AllianceFlipUtil {
     }
 
     public static boolean shouldFlip() {
-        overrideFlip = SmartDashboard.getBoolean("Sim/OverrideFlip", overrideFlip);
+        // overrideFlip = SmartDashboard.getBoolean("Sim/OverrideFlip", overrideFlip);
 
         return DriverStationBackend.getAlliance().isPresent()
                 && DriverStationBackend.getAlliance().get() == Alliance.RED

@@ -22,8 +22,9 @@ import org.wpilib.units.measure.Angle;
 import org.wpilib.units.measure.AngularVelocity;
 import org.wpilib.units.measure.Dimensionless;
 import org.wpilib.units.measure.Voltage;
+import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.system.Timer;
-import org.wpilib.smartdashboard.SmartDashboard;
+// import org.wpilib.smartdashboard.SmartDashboard;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -180,7 +181,7 @@ public class MotorIOSparkMax extends MotorIO {
 	}
 
 	private void setIdleMode(SparkMax spark, IdleMode idleMode) {
-		SmartDashboard.putNumber("SPARK MAX NEUTRAL MODE SET!!", Timer.getMonotonicTimestamp());
+		// SmartDashboard.putNumber("SPARK MAX NEUTRAL MODE SET!!", Timer.getMonotonicTimestamp());
 		threadPoolExecutor.submit(() -> {
 			main.configure(config.idleMode(idleMode), ResetMode.kNoResetSafeParameters,
 					PersistMode.kNoPersistParameters);
@@ -254,12 +255,12 @@ public class MotorIOSparkMax extends MotorIO {
 	 */
 	public MotorIOSparkMax(MotorIOSparkMaxConfig config) {
 		super(config.unit, config.time, config.followerIDs.length);
-		main = new SparkMax(0, config.mainID, MotorType.kBrushless); // TODO: add buses
+		main = new SparkMax(config.canPort, config.mainID, MotorType.kBrushless); // TODO: add buses
 		setMainConfig(config.mainConfig);
 
 		followers = new SparkMax[config.followerIDs.length];
 		for (int i = 0; i < config.followerIDs.length; i++) {
-			followers[i] = new SparkMax(0, config.followerIDs[i], MotorType.kBrushless);
+			followers[i] = new SparkMax(config.canPort, config.followerIDs[i], MotorType.kBrushless);
 			followerConfig.follow(main, config.followerInverted[i]);
 			applyConfig(followers[i], followerConfig);
 		}
@@ -272,6 +273,7 @@ public class MotorIOSparkMax extends MotorIO {
 	public static class MotorIOSparkMaxConfig {
 		public AngleUnit unit = Units.Rotations;
 		public TimeUnit time = Units.Seconds;
+		public CANPort canPort = CANPort.CAN_S0;
 		public int mainID = -1;
 		public SparkMaxConfig mainConfig = new SparkMaxConfig();
 		public int[] followerIDs = new int[0];

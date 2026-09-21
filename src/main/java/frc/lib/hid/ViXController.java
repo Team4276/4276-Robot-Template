@@ -48,22 +48,6 @@ public class ViXController extends CommandNiDsXboxController implements Joystick
         return new JoystickOutput(getLeftX(), getLeftY());
     }
 
-    public boolean getPOVUP() {
-        return getHID().getPOV() == POVDirection.UP;
-    }
-
-    public boolean getPOVRIGHT() {
-        return getHID().getPOV() == POVDirection.RIGHT;
-    }
-
-    public boolean getPOVDOWN() {
-        return getHID().getPOV() == POVDirection.DOWN;
-    }
-
-    public boolean getPOVLEFT() {
-        return getHID().getPOV() == POVDirection.LEFT;
-    }
-
     public boolean getLT() {
         return getLeftTriggerAxis() > TRIGGER_DEADBAND;
     }
@@ -72,20 +56,20 @@ public class ViXController extends CommandNiDsXboxController implements Joystick
         return getRightTriggerAxis() > TRIGGER_DEADBAND;
     }
 
-    public Command rumbleCommand(RumbleType type, double value, double duration) {
-        return rumbleCommand(type, value, duration, 1);
-    }
+    // public Command rumbleCommand(RumbleType type, double value, double duration) {
+    //     return rumbleCommand(type, value, duration, 1);
+    // }
 
-    public Command rumbleCommand(RumbleType type, double value, double duration, int times) {
-        var command = new SequentialCommandGroup();
+    // public Command rumbleCommand(RumbleType type, double value, double duration, int times) {
+    //     var command = new SequentialCommandGroup();
 
-        for (int i = 0; i < times; i++) {
-            command.addCommands(
-                    Commands.startEnd(() -> setRumble(type, value), () -> setRumble(type, 0.0))
-                            .withTimeout(duration)
-                            .andThen(Commands.waitSeconds(0.1)));
-        }
+    //     // for (int i = 0; i < times; i++) {
+    //     //     command.addCommands(
+    //     //             Commands.startEnd(() -> setR(type, value), () -> setRumble(type, 0.0))
+    //     //                     .withTimeout(duration)
+    //     //                     .andThen(Commands.waitSeconds(0.1)));
+    //     // }
 
-        return command;
-    }
+    //     return command;
+    // }
 }
