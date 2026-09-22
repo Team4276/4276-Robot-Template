@@ -1,16 +1,15 @@
 package frc.robot.subsystems.drive.scuffed;
 
-import static org.wpilib.units.Units.MetersPerSecond;
+import static org.wpilib.units.Units.Radians;
+import static org.wpilib.units.Units.RadiansPerSecond;
 import static org.wpilib.units.Units.RotationsPerSecond;
+import static org.wpilib.units.Units.Meters;
+import static org.wpilib.units.Units.MetersPerSecond;
 
+import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.kinematics.SwerveModulePosition;
 import org.wpilib.math.kinematics.SwerveModuleVelocity;
-import org.wpilib.math.util.Units;
-import org.wpilib.units.measure.Angle;
 import org.wpilib.units.measure.AngularVelocity;
-
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.spark.SparkMax;
 
 import frc.lib.io.MotorIOSparkMax;
 import frc.lib.io.MotorIOTalonFX;
@@ -18,7 +17,6 @@ import frc.lib.io.MotorIO.Setpoint;
 import frc.lib.io.MotorIOSparkMax.MotorIOSparkMaxConfig;
 import frc.lib.io.MotorIOTalonFX.MotorIOTalonFXConfig;
 import frc.robot.subsystems.drive.DriveConstants;
-import frc.robot.subsystems.drive.DriveIO.ModuleInput;
 
 public class SwerveModule {
     public enum ModulePosition {
@@ -38,15 +36,20 @@ public class SwerveModule {
 
     public void setVelocity(SwerveModuleVelocity velocity) {
         mDriveFx.applySetpoint(Setpoint.withVelocitySetpoint(AngularVelocity
-                .ofBaseUnits(velocity.velocity / (2 * Math.PI * DriveConstants.wheelRadiusMeters), RotationsPerSecond)));
+                .ofBaseUnits(velocity.velocity / (2 * Math.PI * DriveConstants.wheelRadiusMeters),
+                        RotationsPerSecond)));
         mTurnSpark.applySetpoint(Setpoint.withPositionSetpoint(velocity.angle.getMeasure()));
     }
 
     public SwerveModulePosition getPosition() {
-        return new SwerveModulePosition();
+        return new SwerveModulePosition(
+                Meters.of(mDriveFx.getPosition().in(Radians) * DriveConstants.wheelRadiusMeters),
+                new Rotation2d(mTurnSpark.getPosition()));
     }
 
     public SwerveModuleVelocity getVelocity() {
-        return new SwerveModuleVelocity();
+        return new SwerveModuleVelocity(
+                MetersPerSecond.of(mDriveFx.getVelocity().in(RadiansPerSecond) * DriveConstants.wheelRadiusMeters),
+                new Rotation2d(mTurnSpark.getPosition()));
     }
 }

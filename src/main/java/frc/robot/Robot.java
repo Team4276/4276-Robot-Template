@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import static org.wpilib.units.Units.Volts;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -17,22 +15,19 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
-// import choreo.auto.AutoFactory;
-import org.wpilib.math.geometry.Pose2d;
-import org.wpilib.system.RobotController;
-import org.wpilib.system.Threads;
+import choreo.auto.AutoFactory;
 import org.wpilib.system.Timer;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
 import frc.lib.util.LoggedTracer;
-// import frc.robot.auto.AutoSelector;
+import frc.robot.auto.AutoSelector;
 import frc.robot.controlboard.ControlBoard;
-// import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.Drive;
 
 public class Robot extends LoggedRobot {
-    // private AutoFactory mAutoFactory;
+    private AutoFactory mAutoFactory;
     private Command mAutonomousCommand;
-    // private final AutoSelector mAutoSelector;
+    private final AutoSelector mAutoSelector;
 
     public static boolean resetPoseForAuto = false;
 
@@ -63,14 +58,14 @@ public class Robot extends LoggedRobot {
 
         Logger.start();
 
-        // mAutoFactory = new AutoFactory(
-        // Drive.mInstance::getPose,
-        // Drive.mInstance::resetPose,
-        // Drive.mInstance::followChoreoTrajectory,
-        // true,
-        // Drive.mInstance);
+        mAutoFactory = new AutoFactory(
+                Drive.mInstance::getPose,
+                Drive.mInstance::resetPose,
+                Drive.mInstance::followChoreoTrajectory,
+                true,
+                Drive.mInstance);
 
-        // mAutoSelector = new AutoSelector(mAutoFactory);
+        mAutoSelector = new AutoSelector(mAutoFactory);
 
         // Log active commands
         Map<String, Integer> commandCounts = new HashMap<>();
@@ -89,7 +84,7 @@ public class Robot extends LoggedRobot {
         CommandScheduler.getInstance()
                 .onCommandInterrupt((Command command) -> logCommandFunction.accept(command, false));
 
-        // CommandScheduler.getInstance().schedule(mAutoFactory.warmupCmd());
+        CommandScheduler.getInstance().schedule(mAutoFactory.warmupCmd());
 
         ControlBoard.mInstance.configureBindings();
 
@@ -109,7 +104,12 @@ public class Robot extends LoggedRobot {
             // Threads.setCurrentThreadPriority(false, 0);
         } catch (Exception e) {
             Logger.recordOutput("Error/Last Loop Error/Last Error Message", e.getMessage());
-            Logger.recordOutput("Error/Last Loop Error/Last Error Timestamp", Timer.getMonotonicTimestamp()); // TODO: check if this is correct time
+            Logger.recordOutput("Error/Last Loop Error/Last Error Timestamp", Timer.getMonotonicTimestamp()); // TODO:
+                                                                                                              // check
+                                                                                                              // if this
+                                                                                                              // is
+                                                                                                              // correct
+                                                                                                              // time
         }
     }
 
@@ -120,7 +120,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void disabledPeriodic() {
         if (resetPoseForAuto) {
-            // Drive.mInstance.resetPose(mAutoSelector.getSelectedAutoStartingPose());
+            Drive.mInstance.resetPose(mAutoSelector.getSelectedAutoStartingPose());
             resetPoseForAuto = false;
         }
     }
@@ -131,7 +131,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousInit() {
-        // mAutonomousCommand = mAutoSelector.getSelectedCommand();
+        mAutonomousCommand = mAutoSelector.getSelectedCommand();
 
         if (mAutonomousCommand != null) {
             CommandScheduler.getInstance().schedule(mAutonomousCommand);

@@ -23,7 +23,6 @@ import org.wpilib.units.measure.AngularVelocity;
 import org.wpilib.units.measure.Dimensionless;
 import org.wpilib.units.measure.Voltage;
 import org.wpilib.hardware.bus.CANPort;
-import org.wpilib.system.Timer;
 // import org.wpilib.smartdashboard.SmartDashboard;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;

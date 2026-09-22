@@ -8,7 +8,6 @@ import java.util.function.Supplier;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Translation2d;
 import org.wpilib.math.kinematics.ChassisVelocities;
-import org.wpilib.math.system.DCMotor;
 import org.wpilib.math.util.Units;
 import org.wpilib.units.measure.AngularVelocity;
 import org.wpilib.units.measure.LinearVelocity;
@@ -114,8 +113,7 @@ public class DriveConstants {
         config.unit = org.wpilib.units.Units.Rotations;
         config.time = org.wpilib.units.Units.Minutes;
         config.useAbsoluteEncoder = true;
-        // config.positionConversionFactor = 2 * Math.PI;
-        // config.velocityConversionFactor = (2 * Math.PI) / 60.0;
+        config.velocityConversionFactor = 60.0; // For some reason absolute encoder native units is RPM
         config.mainID = port.id;
         config.mainConfig = getSparkConfig();
         config.canPort = port.canPort;

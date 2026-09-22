@@ -12,7 +12,6 @@ import org.wpilib.units.measure.Angle;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import frc.robot.Ports;
-import frc.robot.RobotConstants;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.scuffed.SwerveModule.ModulePosition;
 
@@ -25,10 +24,10 @@ public class SwerveDrive {
 
     public SwerveDrive(){
         modules = new SwerveModule[]{
-            // new SwerveModule(),
-            // new SwerveModule(),
-            // new SwerveModule(),
-            // new SwerveModule()
+            new SwerveModule(DriveConstants.getDriveIOConfig(Ports.FRONT_LEFT_DRIVE), DriveConstants.getTurnIOConfig(Ports.FRONT_LEFT_TURN)),
+            new SwerveModule(DriveConstants.getDriveIOConfig(Ports.FRONT_RIGHT_DRIVE), DriveConstants.getTurnIOConfig(Ports.FRONT_RIGHT_TURN)),
+            new SwerveModule(DriveConstants.getDriveIOConfig(Ports.BACK_LEFT_DRIVE), DriveConstants.getTurnIOConfig(Ports.BACK_LEFT_TURN)),
+            new SwerveModule(DriveConstants.getDriveIOConfig(Ports.BACK_RIGHT_DRIVE), DriveConstants.getTurnIOConfig(Ports.BACK_RIGHT_TURN)),
         };
     }
 

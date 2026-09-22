@@ -18,8 +18,7 @@ import frc.lib.util.AllianceFlipUtil;
 public class Drive extends SubsystemBase {
     public static final Drive mInstance = new Drive();
 
-    private DriveIO io = new DriveIO() {
-    };
+    private DriveIO io = new DriveIOScuffed();
     private DriveIOInputsAutoLogged inputs = new DriveIOInputsAutoLogged();
 
     private Drive() {

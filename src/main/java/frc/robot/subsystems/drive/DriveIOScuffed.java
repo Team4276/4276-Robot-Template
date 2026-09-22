@@ -19,6 +19,8 @@ public class DriveIOScuffed implements DriveIO {
 
     @Override
     public void updateInputs(DriveIOInputs inputs) {
+        mSwerveDrive.updateTelemetry();
+
         inputs.pose = mSwerveDrive.getPose();
         inputs.gyroAngle = mSwerveDrive.getGyroAngle();
         inputs.fieldRelativeSpeed = mSwerveDrive.getFieldRelativeVelocity();
@@ -35,21 +37,36 @@ public class DriveIOScuffed implements DriveIO {
     }
 
     private ModuleInput getFromModule(SwerveModule module) {
+        // return new ModuleInput(
+        //         true,
+        //         module.mDriveFx.getPosition(),
+        //         module.mDriveFx.getVelocity(),
+        //         module.mDriveFx.getMotorVoltage(),
+        //         module.mDriveFx.getSupplyCurrent(),
+        //         module.mDriveFx.getStatorCurrent(),
+        //         Temperature.ofBaseUnits(0, Celsius),
+        //         true,
+        //         module.mTurnSpark.getPosition(),
+        //         module.mTurnSpark.getVelocity(),
+        //         module.mTurnSpark.getMotorVoltage(),
+        //         module.mTurnSpark.getSupplyCurrent(),
+        //         module.mTurnSpark.getStatorCurrent(),
+        //         Temperature.ofBaseUnits(0, Celsius));
         return new ModuleInput(
                 true,
-                module.mDriveFx.getPosition(),
-                module.mDriveFx.getVelocity(),
-                module.mDriveFx.getMotorVoltage(),
-                module.mDriveFx.getSupplyCurrent(),
-                module.mDriveFx.getStatorCurrent(),
-                Temperature.ofBaseUnits(0, Celsius),
+                module.mDriveFx.getPosition().baseUnitMagnitude(),
+                module.mDriveFx.getVelocity().baseUnitMagnitude(),
+                module.mDriveFx.getMotorVoltage().baseUnitMagnitude(),
+                module.mDriveFx.getSupplyCurrent().baseUnitMagnitude(),
+                module.mDriveFx.getStatorCurrent().baseUnitMagnitude(),
+                Temperature.ofBaseUnits(0, Celsius).baseUnitMagnitude(),
                 true,
-                module.mTurnSpark.getPosition(),
-                module.mTurnSpark.getVelocity(),
-                module.mTurnSpark.getMotorVoltage(),
-                module.mTurnSpark.getSupplyCurrent(),
-                module.mTurnSpark.getStatorCurrent(),
-                Temperature.ofBaseUnits(0, Celsius));
+                module.mTurnSpark.getPosition().baseUnitMagnitude(),
+                module.mTurnSpark.getVelocity().baseUnitMagnitude(),
+                module.mTurnSpark.getMotorVoltage().baseUnitMagnitude(),
+                module.mTurnSpark.getSupplyCurrent().baseUnitMagnitude(),
+                module.mTurnSpark.getStatorCurrent().baseUnitMagnitude(),
+                Temperature.ofBaseUnits(0, Celsius).baseUnitMagnitude());
     }
 
     @Override
