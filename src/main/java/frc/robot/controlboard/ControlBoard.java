@@ -18,6 +18,8 @@ import frc.lib.io.MotorIO.Setpoint;
 import frc.lib.util.ControllerUtil;
 import frc.robot.Robot;
 import frc.robot.RobotConstants;
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveConstants;
 // import frc.robot.subsystems.drive.Drive;
 // import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.examplesubsystem.ExampleSubsystem;
@@ -34,14 +36,13 @@ public class ControlBoard extends SubsystemBase {
 	public static final CommandGenericHID mKeyboard1 = new CommandGenericHID(1);
 
 	public void configureBindings() {
+		Drive.mInstance.setDefaultCommand(Drive.mInstance.drive(DriveConstants.kTeleopRequestUpdater));
 
-		// Drive.mInstance.setDefaultCommand(Drive.mInstance.drive(DriveConstants.kTeleopRequestUpdater));
-
-		// mDriver.back()
-		// .onTrue(Commands.runOnce(
-		// () -> Drive.mInstance.zeroGyro(),
-		// Drive.mInstance)
-		// .ignoringDisable(true));
+		mDriver.back()
+		.onTrue(Commands.runOnce(
+		() -> Drive.mInstance.zeroGyro(),
+		Drive.mInstance)
+		.ignoringDisable(true));
 
 		mDriver.start()
 				.onTrue(Commands.runOnce(() -> Robot.resetPoseForAuto = true).ignoringDisable(true));

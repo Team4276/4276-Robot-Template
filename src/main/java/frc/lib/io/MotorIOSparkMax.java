@@ -42,6 +42,9 @@ public class MotorIOSparkMax extends MotorIO {
 	private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1, 1, 5,
 			java.util.concurrent.TimeUnit.MILLISECONDS, queue);
 	private boolean configFailed = false;
+	private boolean useAbsoluteEncoder = false;
+	private double positionFactor = 1.0;
+	private double velocityFactor = 1.0;
 
 	public void applyConfig(SparkMax spark, SparkMaxConfig config) {
 		threadPoolExecutor.submit(() -> {
@@ -63,8 +66,13 @@ public class MotorIOSparkMax extends MotorIO {
 		inputs.setPointType = Mode.IDLE;
 		inputs.setPointValueAsDouble = 0.0;
 
-		inputs.position[0] = main.getEncoder().getPosition().get();
-		inputs.velocity[0] = main.getEncoder().getVelocity().get();
+		if (!useAbsoluteEncoder) {
+			inputs.position[0] = main.getEncoder().getPosition().get() * positionFactor;
+			inputs.velocity[0] = main.getEncoder().getVelocity().get() * velocityFactor;
+		} else {
+			inputs.position[0] = main.getAbsoluteEncoder().getPosition().get() * positionFactor;
+			inputs.velocity[0] = main.getAbsoluteEncoder().getVelocity().get() * velocityFactor;
+		}
 		inputs.statorCurrent[0] = main.getOutputCurrent().get();
 		inputs.supplyCurrent[0] = main.getOutputCurrent().get();
 		inputs.motorVoltage[0] = main.getBusVoltage().get() * main.getAppliedOutput().get();
@@ -72,8 +80,8 @@ public class MotorIOSparkMax extends MotorIO {
 		inputs.acceleration[0] = 0.0;
 
 		for (int i = 0; i < followers.length; i++) {
-			inputs.position[i + 1] = followers[i].getEncoder().getPosition().get();
-			inputs.velocity[i + 1] = followers[i].getEncoder().getVelocity().get();
+			inputs.position[i + 1] = followers[i].getEncoder().getPosition().get() * positionFactor;
+			inputs.velocity[i + 1] = followers[i].getEncoder().getVelocity().get() * velocityFactor;
 			inputs.statorCurrent[i + 1] = followers[i].getOutputCurrent().get();
 			inputs.supplyCurrent[i + 1] = followers[i].getOutputCurrent().get();
 			inputs.motorVoltage[i + 1] = followers[i].getBusVoltage().get() * followers[i].getAppliedOutput().get();
@@ -142,7 +150,7 @@ public class MotorIOSparkMax extends MotorIO {
 
 	@Override
 	protected void setMotionMagicSetpoint(Angle mechanismPosition, int slot) {
-		main.getClosedLoopController().setSetpoint(mechanismPosition.in(Rotations),
+		main.getClosedLoopController().setSetpoint(mechanismPosition.div(positionFactor).in(Rotations),
 				ControlType.kMAXMotionPositionControl, ClosedLoopSlot.fromInt(slot));
 	}
 
@@ -153,7 +161,7 @@ public class MotorIOSparkMax extends MotorIO {
 
 	@Override
 	protected void setVelocitySetpoint(AngularVelocity mechanismVelocity, int slot) {
-		main.getClosedLoopController().setSetpoint(mechanismVelocity.in(RotationsPerSecond), ControlType.kVelocity,
+		main.getClosedLoopController().setSetpoint(mechanismVelocity.div(velocityFactor).in(RotationsPerSecond), ControlType.kVelocity,
 				ClosedLoopSlot.fromInt(slot));
 	}
 
@@ -164,14 +172,14 @@ public class MotorIOSparkMax extends MotorIO {
 
 	@Override
 	protected void setPositionSetpoint(Angle mechanismPosition, int slot) {
-		main.getClosedLoopController().setSetpoint(mechanismPosition.in(Rotations), ControlType.kPosition,
+		main.getClosedLoopController().setSetpoint(mechanismPosition.div(positionFactor).in(Rotations), ControlType.kPosition,
 				ClosedLoopSlot.fromInt(slot));
 	}
 
 	@Override
 	public void setCurrentPosition(Angle mechanismPosition) {
 		threadPoolExecutor.submit(() -> {
-			main.getEncoder().setPosition(mechanismPosition.in(Rotations));
+			main.getEncoder().setPosition(mechanismPosition.div(positionFactor).in(Rotations));
 		});
 	}
 
@@ -181,7 +189,8 @@ public class MotorIOSparkMax extends MotorIO {
 	}
 
 	private void setIdleMode(SparkMax spark, IdleMode idleMode) {
-		// SmartDashboard.putNumber("SPARK MAX NEUTRAL MODE SET!!", Timer.getMonotonicTimestamp());
+		// SmartDashboard.putNumber("SPARK MAX NEUTRAL MODE SET!!",
+		// Timer.getMonotonicTimestamp());
 		threadPoolExecutor.submit(() -> {
 			main.configure(config.idleMode(idleMode), ResetMode.kNoResetSafeParameters,
 					PersistMode.kNoPersistParameters);
@@ -264,6 +273,10 @@ public class MotorIOSparkMax extends MotorIO {
 			followerConfig.follow(main, config.followerInverted[i]);
 			applyConfig(followers[i], followerConfig);
 		}
+
+		useAbsoluteEncoder = config.useAbsoluteEncoder;
+		positionFactor = config.positionConversionFactor;
+		velocityFactor = config.velocityConversionFactor;
 	}
 
 	/**
@@ -273,6 +286,9 @@ public class MotorIOSparkMax extends MotorIO {
 	public static class MotorIOSparkMaxConfig {
 		public AngleUnit unit = Units.Rotations;
 		public TimeUnit time = Units.Seconds;
+		public double positionConversionFactor = 1.0;
+		public double velocityConversionFactor = 1.0;
+		public boolean useAbsoluteEncoder = false;
 		public CANPort canPort = CANPort.CAN_S0;
 		public int mainID = -1;
 		public SparkMaxConfig mainConfig = new SparkMaxConfig();

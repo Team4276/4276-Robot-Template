@@ -273,6 +273,8 @@ public class MotorIOSparkFlex extends MotorIO {
 	public static class MotorIOSparkFlexConfig {
 		public AngleUnit unit = Units.Rotations;
 		public TimeUnit time = Units.Seconds;
+		public double positionConversionFactor = 1.0;
+		public double velocityConversionFactor = 1.0;
 		public CANPort canPort = CANPort.CAN_S0;
 		public int mainID = -1;
 		public SparkFlexConfig mainConfig = new SparkFlexConfig();
