@@ -12,6 +12,7 @@ import org.wpilib.command2.Commands;
 import org.wpilib.command2.SubsystemBase;
 import org.wpilib.command2.button.CommandGenericHID;
 import org.wpilib.command2.button.CommandNiDsXboxController;
+
 import frc.lib.hid.ViXController;
 import frc.lib.io.MotorIO.Mode;
 import frc.lib.io.MotorIO.Setpoint;
@@ -24,97 +25,103 @@ import frc.robot.subsystems.examplesubsystem.ExampleSubsystem;
 import frc.robot.subsystems.superstructure.Superstructure;
 
 public class ControlBoard extends SubsystemBase {
-	public static final ControlBoard mInstance = new ControlBoard();
+    public static final ControlBoard mInstance = new ControlBoard();
 
-	public static final ViXController mDriver = new ViXController(
-			ControlBoardConstants.kDriverControllerPort);
-	public static final ViXController mOperator = new ViXController(
-			ControlBoardConstants.kOperatorControllerPort);
-	public static final CommandGenericHID mKeyboard0 = new CommandGenericHID(0);
-	public static final CommandGenericHID mKeyboard1 = new CommandGenericHID(1);
+    public static final ViXController mDriver = new ViXController(
+            ControlBoardConstants.kDriverControllerPort);
+    public static final ViXController mOperator = new ViXController(
+            ControlBoardConstants.kOperatorControllerPort);
+    public static final CommandGenericHID mKeyboard0 = new CommandGenericHID(0);
+    public static final CommandGenericHID mKeyboard1 = new CommandGenericHID(1);
 
-	public void configureBindings() {
-		Drive.mInstance.setDefaultCommand(Drive.mInstance.drive(DriveConstants.kTeleopRequestUpdater));
+    public void configureBindings() {
+        Drive.mInstance.setDefaultCommand(Drive.mInstance.drive(DriveConstants.kTeleopRequestUpdater));
 
-		mDriver.back()
-		.onTrue(Commands.runOnce(
-		() -> Drive.mInstance.zeroGyro(),
-		Drive.mInstance)
-		.ignoringDisable(true));
+        mDriver.back()
+                .onTrue(Commands.runOnce(
+                        () -> Drive.mInstance.zeroGyro(),
+                        Drive.mInstance)
+                        .ignoringDisable(true));
 
-		mDriver.start()
-				.onTrue(Commands.runOnce(() -> Robot.resetPoseForAuto = true).ignoringDisable(true));
+        mDriver.start()
+                .onTrue(Commands.runOnce(() -> Robot.resetPoseForAuto = true).ignoringDisable(true));
 
-		driverControls();
-		// bringupControls();
-		// jogControls();
-		// tuningControls();
+        driverControls();
+        bringupControls();
+        // jogControls();
+        // tuningControls();
 
-		if (RobotConstants.getMode() == RobotConstants.Mode.SIM) {
-			DriverStationBackend.silenceJoystickConnectionAlert(true);
-		}
-	}
+        if (RobotConstants.getMode() == RobotConstants.Mode.SIM) {
+            DriverStationBackend.silenceJoystickConnectionAlert(true);
+        }
+    }
 
-	public void driverControls() {
-		// mKeyboard0.button(1)
-		// .onTrue(Superstructure.mInstance.exampleCommand().onlyWhile(mKeyboard0.button(1)));
-		// mKeyboard0.button(2)
-		// .onTrue(Superstructure.mInstance.testCommand().onlyWhile(mKeyboard0.button(2)));
+    public void driverControls() {
+        mDriver.a()
+                .onTrue(Superstructure.mInstance.setOn());
 
-		mDriver.a()
-				.onTrue(Superstructure.mInstance.setOn());
+        mDriver.b()
+                .onTrue(Superstructure.mInstance.setOff());
+    }
 
-		mDriver.b()
-				.onTrue(Superstructure.mInstance.setOff());
-	}
+    public void bringupControls() {
+        // Target Kraken motor ID (e.g. 5) on CANBus (e.g. RobotConstants.S1)
+        ExampleSubsystem krakenTester = new ExampleSubsystem(16, RobotConstants.S4);
 
-	public void bringupControls() {
-		mDriver.a().onTrue(ExampleSubsystem.mInstance.setpointCommand(ExampleSubsystem.EXAMPLE_SETPOINT));
-	}
+        // Xbox Joystick Control (Pushing left stick forward applies up to 6.0V)
+        krakenTester.setDefaultCommand(
+            krakenTester.runVoltageWithJoystick(
+                () -> -mDriver.getLeftWithDeadband().y, // Inverted so stick forward = positive voltage
+                6.0                                    // 6.0V max voltage limit
+            )
+        );
 
-	public void jogControls() {
-		ControllerUtil.bindJog(
-				ExampleSubsystem.mInstance,
-				Volts.of(0.01).baseUnitMagnitude(),
-				Volts.of(0.0).baseUnitMagnitude(),
-				Volts.of(12.0).baseUnitMagnitude(),
-				Mode.VOLTAGE,
-				Setpoint.withNeutralSetpoint(),
-				Milliseconds.of(50.0),
-				mOperator.a(),
-				mOperator.b(),
-				mOperator.rightBumper());
-	}
+        // Button Hold Test (Holding button 'A' applies 3.0V test voltage)
+        mDriver.a().whileTrue(krakenTester.testVoltageCommand(Units.Volts.of(3.0)));
+    }
 
-	public void tuningControls() {
-	}
+    public void jogControls() {
+        ControllerUtil.bindJog(
+                ExampleSubsystem.mInstance,
+                Volts.of(0.01).baseUnitMagnitude(),
+                Volts.of(0.0).baseUnitMagnitude(),
+                Volts.of(12.0).baseUnitMagnitude(),
+                Mode.VOLTAGE,
+                Setpoint.withNeutralSetpoint(),
+                Milliseconds.of(50.0),
+                mOperator.a(),
+                mOperator.b(),
+                mOperator.rightBumper());
+    }
 
-	public Command rumbleCommand(Time duration) {
-		return rumbleCommand(mDriver, duration);
-	}
+    public void tuningControls() {
+    }
 
-	public Command rumbleCommand(CommandNiDsXboxController controller, Time duration) {
-		return Commands.sequence(
-				Commands.runOnce(() -> {
-					setRumble(controller, true);
-				}),
-				Commands.waitSeconds(duration.in(Units.Seconds)),
-				Commands.runOnce(() -> {
-					setRumble(controller, false);
-				}))
-				.finallyDo(() -> {
-					setRumble(controller, false);
-					;
-				})
-				.withName("Rumble");
-	}
+    public Command rumbleCommand(Time duration) {
+        return rumbleCommand(mDriver, duration);
+    }
 
-	public void setRumble(boolean on) {
-		setRumble(mDriver, on);
-	}
+    public Command rumbleCommand(CommandNiDsXboxController controller, Time duration) {
+        return Commands.sequence(
+                Commands.runOnce(() -> {
+                    setRumble(controller, true);
+                }),
+                Commands.waitSeconds(duration.in(Units.Seconds)),
+                Commands.runOnce(() -> {
+                    setRumble(controller, false);
+                }))
+                .finallyDo(() -> {
+                    setRumble(controller, false);
+                })
+                .withName("Rumble");
+    }
 
-	public void setRumble(CommandNiDsXboxController controller, boolean on) {
-		controller.getHID().setRumble(RumbleType.RIGHT_RUMBLE, on ? 1.0 : 0.0);
-		controller.getHID().setRumble(RumbleType.LEFT_RUMBLE, on ? 1.0 : 0.0);
-	}
+    public void setRumble(boolean on) {
+        setRumble(mDriver, on);
+    }
+
+    public void setRumble(CommandNiDsXboxController controller, boolean on) {
+        controller.getHID().setRumble(RumbleType.RIGHT_RUMBLE, on ? 1.0 : 0.0);
+        controller.getHID().setRumble(RumbleType.LEFT_RUMBLE, on ? 1.0 : 0.0);
+    }
 }

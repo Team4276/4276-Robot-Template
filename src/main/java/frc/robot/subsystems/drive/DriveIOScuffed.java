@@ -12,9 +12,10 @@ import frc.robot.subsystems.drive.scuffed.SwerveModule;
 import frc.robot.subsystems.drive.scuffed.SwerveModule.ModulePosition;
 
 public class DriveIOScuffed implements DriveIO {
-    private SwerveDrive mSwerveDrive;
+    private final SwerveDrive mSwerveDrive;
 
     public DriveIOScuffed() {
+        mSwerveDrive = new SwerveDrive();
     }
 
     @Override

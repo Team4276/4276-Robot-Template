@@ -19,8 +19,8 @@ public class SwerveDrive {
     private final SwerveModule[] modules;
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(DriveConstants.kModuleTranslations);
 
-    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, Rotation2d.ZERO, getModulePositions());
-    private final Pigeon2 gyro = new Pigeon2(Ports.PIGEON.id, Ports.PIGEON.bus);
+    private final SwerveDriveOdometry odometry;
+    private final Pigeon2 gyro;
 
     public SwerveDrive(){
         modules = new SwerveModule[]{
@@ -29,6 +29,9 @@ public class SwerveDrive {
             new SwerveModule(DriveConstants.getDriveIOConfig(Ports.BACK_LEFT_DRIVE), DriveConstants.getTurnIOConfig(Ports.BACK_LEFT_TURN)),
             new SwerveModule(DriveConstants.getDriveIOConfig(Ports.BACK_RIGHT_DRIVE), DriveConstants.getTurnIOConfig(Ports.BACK_RIGHT_TURN)),
         };
+
+        odometry = new SwerveDriveOdometry(kinematics, Rotation2d.ZERO, getModulePositions());
+        gyro = new Pigeon2(Ports.PIGEON.id, Ports.PIGEON.bus);
     }
 
     public void updateTelemetry() {
@@ -48,7 +51,7 @@ public class SwerveDrive {
     }
 
     public ChassisVelocities getFieldRelativeVelocity() {
-        return getFieldRelativeVelocity().toFieldRelative(new Rotation2d(getGyroAngle()));
+        return getRobotRelativeVelocity().toFieldRelative(new Rotation2d(getGyroAngle()));
     }
 
     public SwerveModulePosition[] getModulePositions() {
